@@ -17,10 +17,7 @@
             <aside class="flex w-72 flex-col space-y-2 bg-transparen p-2" style="height: 90.5vh"
                    x-show="asideOpen">
 
-                <a href="#" class="flex items-center space-x-1 rounded-md px-2 py-3 hover:bg-gray-100 hover:text-blue-600">
-                    <span class="text-2xl"><i class="bx bx-cart"></i></span>
-                    <span>Послуги</span>
-                </a>
+                <Link :href="'/'" class="flex items-center space-x-1 rounded-md px-2 py-3 hover:bg-gray-100 hover:text-blue-600">Послуги</Link>
                 <a href="#" class="flex items-center space-x-1 rounded-md px-2 py-3 hover:bg-gray-100 hover:text-blue-600">
                     <span class="text-2xl"><i class="bx bx-cart"></i></span>
                     <span>Пр нас</span>
