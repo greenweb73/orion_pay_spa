@@ -24,6 +24,8 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/faqs', [\App\Http\Controllers\FaqController::class, 'index'])->name('faq.index');
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
