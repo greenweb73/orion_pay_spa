@@ -5,7 +5,10 @@
     background-image: url('/images/orion-constellation.jpg');
     height: 350px;
   ">
-        <slot />
+        <div class="container  mx-auto">
+            <slot />
+        </div>
+
     </div>
 </template>
 <script>
