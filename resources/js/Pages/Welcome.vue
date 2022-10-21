@@ -82,7 +82,7 @@
                                         :contentClasses="['justify-center','w-80','px-4', 'py-3', 'rounded-full', 'text-blue-600', 'cursor-pointer']"
                                         :items="curTo"
                                         :placeholder="currency_2.name"
-                                        :defValue = "currency_2"
+                                        :defValue = "getSelectedCurrency_2"
                                         @updateSelect="selectedCurrency_2"
                                     />
                                 </div>
@@ -247,7 +247,11 @@
             getSelectedCurrency_1() {
                 const currency_1 = {...this.currency_1}
                 return currency_1
-            } ,
+            },
+            getSelectedCurrency_2() {
+                const currency_2 = {...this.currency_2}
+                return currency_2
+            },
             SetInvoiceAmount(value) {
                 this.invoiceAmount = value
             }
