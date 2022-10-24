@@ -12,9 +12,10 @@
             </div>
             <MySelect
                 :contentClasses="['px-4', 'py-3', 'rounded-full', 'text-blue-600', 'cursor-pointer']"
-                :items="cities" @updateSelect="selectedCity"
+                :items="cities" @updateSelect="setSelectedCity"
                 :placeholder="'Оберіть місто'"
                 :defValue = "{}"
+                :class="'city-select'"
             />
 
 
@@ -50,15 +51,18 @@
                                 <h2 class="text-blue-700/75 text-2xl font-bold">Віддаєте</h2>
                             </div>
 
-                            <div class="px-4 py-5 flex-auto ">
-
-                                <MySelect v-if="curFrom"
-                                          :contentClasses="['justify-center','w-80','px-4', 'py-3', 'rounded-full', 'text-blue-600', 'cursor-pointer']"
-                                          :items="curFrom"
-                                          :placeholder="currency_1.name"
-                                          :defValue = "getSelectedCurrency_1"
-                                          @updateSelect="selectedCurrency_1"
-                                />
+                            <div class="px-4 py-5 flex-auto text-blue-600">
+                                <div class="justify-center w-80 px-4 py-3 rounded-full text-blue-600 cursor-pointer">
+                                    <v-select :options="curFrom"
+                                              :clearable="false"
+                                              label="name"
+                                              :value="getSelectedCurrency_1"
+                                              :reduce="currency => currency"
+                                              v-model="currency_1"
+                                              :getOptionLabel="currency_1 => currency_1.name"
+                                              @input="selectedCurrency_1"
+                                    />
+                                </div>
 
                             </div>
                             <div class="px-4 py-5 flex-auto amountInput relative">
@@ -77,17 +81,22 @@
                             <div class="px-4 py-5 flex-auto">
                                 <h2 class="text-blue-700/75 text-2xl font-bold">Отримуєте</h2>
                             </div>
-                            <div class="px-4 py-5 flex-auto">
-                                <MySelect v-if="curTo"
-                                          :contentClasses="['justify-center','w-80','px-4', 'py-3', 'rounded-full', 'text-blue-600', 'cursor-pointer']"
-                                          :items="curTo"
-                                          :placeholder="currency_2.name"
-                                          :defValue = "getSelectedCurrency_2"
-                                          @updateSelect="selectedCurrency_2"
-                                />
+                            <div class="px-4 py-5 flex-auto text-blue-600">
+                                <div class="justify-center w-80 px-4 py-3 rounded-full text-blue-600 cursor-pointer">
+
+                                    <v-select :options="curTo"
+                                              :clearable="false"
+
+                                              :value="getSelectedCurrency_2"
+                                              :reduce="currency => currency"
+                                              v-model="currency_2"
+                                              :getOptionLabel="currency_2 => currency_2.name"
+                                              @input="selectedCurrency_2"
+                                    />
+                                </div>
                             </div>
                             <div class="px-4 py-5 flex-auto amountInput relative">
-                                <input v-model="withdrawAmount" type="number" class="cursor-text without-spin-btn mt-0 block w-full focus:border-black focus:outline-none text-gray-700 border-0 border-b-2 border-gray-200 cursor-pointer focus:ring-0"/>
+                                <input :key="itKey" v-model="withdrawAmount" type="number" class="cursor-text without-spin-btn mt-0 block w-full focus:border-black focus:outline-none text-gray-700 border-0 border-b-2 border-gray-200 cursor-pointer focus:ring-0"/>
                                 <div class="currencyName block text-black">{{ currency_2.name }}</div>
                             </div>
                             <div class="bottonBlock flex flex-auto justify-center pt-4 pb-6">
@@ -104,11 +113,21 @@
 </template>
 
 <script>
+    const EXCHANGE_API = 'https://api.exchangerate.host/latest?base=baseCurrency';
+    const RATE_UAHUSD = 40.6
+    const FIAT_PROFIT = 0.96;
+    const CRYPTA_PROFIT_UA = 0.98;
+    const CRYPTA_PROFIT_EU = 0.97;
+    const CASH_VARSHAVA = 0.997
+
     import { Head, Link } from '@inertiajs/inertia-vue3';
     import MainLayout from "@/Layouts/MainLayout.vue";
     import MySelect from "@/Components/MySelect.vue";
     import NumberInput from "@/Components/NumberInput.vue";
     import TextInput from "@/Components/TextInput.vue";
+    import vSelect from 'vue-select'
+
+    import 'vue-select/dist/vue-select.css';
 
 
     export default {
@@ -119,7 +138,8 @@
             Link,
             MySelect,
             NumberInput,
-            TextInput
+            TextInput,
+            vSelect
         },
         data() {
             return {
@@ -131,6 +151,8 @@
                 currency_2: {},
                 invoiceAmount: null,
                 withdrawAmount: null,
+                rate_usdpln: 1,
+                rate_eurusd: 1,
                 cities: [
                     {
                         id: 1,
@@ -200,22 +222,22 @@
                         id: 5,
                         name: 'USDT (TRC-20)',
                         cc: 'USDT',
-                        type: 'cripto',
+                        type: 'crypto',
                         from: true,
                         to: true
                     },
                     {
                         id: 6,
-                        name: 'PLZ (готівка, Варшава)',
-                        cc: 'PLZ',
+                        name: 'PLN (готівка, Варшава)',
+                        cc: 'PLN',
                         type: 'cash',
                         from: false,
                         to: true
                     },
                     {
                         id: 7,
-                        name: 'PLZ (безготівка на IBAN)',
-                        cc: 'PLZ',
+                        name: 'PLN (безготівка на IBAN)',
+                        cc: 'PLN',
                         type: 'bank',
                         from: false,
                         to: true
@@ -224,7 +246,7 @@
                         id: 8,
                         name: 'USD (на Revolut, Wise...)',
                         cc: 'USD',
-                        type: 'paysystem',
+                        type: 'payservice',
                         from: false,
                         to: true
                     },
@@ -232,7 +254,7 @@
                         id: 9,
                         name: 'EUR (на Revolut, Wise...)',
                         cc: 'EUR',
-                        type: 'paysystem',
+                        type: 'payservice',
                         from: false,
                         to: true
                     },
@@ -244,7 +266,8 @@
                         from: false,
                         to: true
                     }
-                ]
+                ],
+                itKey: 1
             }
         },
         async mounted() {
@@ -259,12 +282,14 @@
             })
             this.currency_2 = this.curTo[1]
 
-            console.log(await this.getRate())
-
+            this.rate_usdpln = await this.getRateCurrency('USD', 'PLN')
+            this.rate_eurusd = await this.getRateCurrency('EUR', 'USD')
+            //console.log(await this.getRateCurrency('USD', 'PLN'))
+            //console.log(this.getSelectedCurrency_1())
         },
         methods: {
-            async getRate() {
-                const EXCHANGE_API = 'https://api.exchangerate.host/latest?base=USD';
+            async getRatesData(baseCurrency) {
+               // const EXCHANGE_API = 'https://api.exchangerate.host/latest?base=baseCurrency';
                 //const EXCHANGE_API = 'http://api.nbp.pl/api/exchangerates/rates/c/usd/today/?format=json';
 
                 const response2 = await fetch(EXCHANGE_API).then(data => {
@@ -272,13 +297,18 @@
                 })
                 return await response2.json();
             },
-            selectedCity(city) {
-                this.city = city
+            async getRateCurrency(base_currency, rate_currency ) {
+                const ratesData = await this.getRatesData(base_currency)
+                return ratesData.rates[rate_currency]
+            },
 
+            setSelectedCity(city) {
+                this.city = city
+                this.city = city
             },
             selectedCurrency_1(currency) {
                 this.currency_1 = currency
-
+                this.CalcExchange()
             },
             selectedCurrency_2(currency) {
                 this.currency_2 = currency
@@ -293,6 +323,246 @@
             },
             SetInvoiceAmount(value) {
                 this.invoiceAmount = value
+            },
+            CalcHandler() {
+            //     if (this.currency_1.cc === 'UAH'
+            //         && this.currency_1.type === 'bank'
+            //         && this.currency_2.cc === 'PLN'
+            //         && this.currency_2.type === 'bank') {
+            //             this.withdrawAmount = (this.invoiceAmount / RATE_UAHUSD) * FIAT_PROFIT * this.rate_usdpln;
+            //     } else if (this.currency_1.cc === 'UAH'
+            //         && this.currency_1.type === 'cash'
+            //         && this.currency_2.cc === 'PLN'
+            //         && this.currency_2.type === 'bank') {
+            //         if(this.city) {
+            //             this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) / RATE_UAHUSD ) * FIAT_PROFIT) * this.rate_usdpln
+            //             this.itKey++
+            //         } else {
+            //             alert('Оберіть місто')
+            //         }
+            //     } else if (this.currency_1.cc === 'USD'
+            //         && this.currency_1.type === 'cash'
+            //         && this.currency_2.cc === 'PLN'
+            //         && this.currency_2.type === 'bank') {
+            //             if(this.city) {
+            //                 this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) * FIAT_PROFIT) * this.rate_usdpln)
+            //                 this.itKey++
+            //             } else {
+            //                 alert('Оберіть місто')
+            //             }
+            //     } else if (this.currency_1.cc === 'EUR'
+            //         && this.currency_1.type === 'cash'
+            //         && this.currency_2.cc === 'PLN'
+            //         && this.currency_2.type === 'bank') {
+            //         if(this.city) {
+            //             this.withdrawAmount = (((this.invoiceAmount * this.rate_eurusd * this.city.coeff ) * FIAT_PROFIT) * this.rate_usdpln)
+            //             this.itKey++
+            //         } else {
+            //             alert('Оберіть місто')
+            //         }
+            //     } else if (this.currency_1.cc === 'USDT'
+            //         && this.currency_1.type === 'crypto'
+            //         && this.currency_2.cc === 'PLN'
+            //         && this.currency_2.type === 'bank') {
+            //             this.withdrawAmount = ((this.invoiceAmount * CRYPTA_PROFIT_EU) * this.rate_usdpln)
+            //             this.itKey++
+            //     }
+            // }
+                if( this.currency_2.cc === 'PLN' && this.currency_2.type === 'bank') {
+                    if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
+                            this.withdrawAmount = ((this.invoiceAmount / RATE_UAHUSD) * FIAT_PROFIT * this.rate_usdpln).toFixed(2);
+                    } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
+                        if(this.city) {
+                            this.withdrawAmount = ((((this.invoiceAmount * this.city.coeff ) / RATE_UAHUSD ) * FIAT_PROFIT) * this.rate_usdpln).toFixed(2)
+                            this.itKey++
+                        } else {
+                            alert('Оберіть місто')
+                        }
+                    } else if (this.currency_1.cc === 'USD' && this.currency_1.type === 'cash') {
+                            if(this.city) {
+                                this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) * FIAT_PROFIT) * this.rate_usdpln).toFixed(2)
+                                this.itKey++
+                            } else {
+                                alert('Оберіть місто')
+                            }
+                    } else if (this.currency_1.cc === 'EUR' && this.currency_1.type === 'cash') {
+                        if(this.city) {
+                            this.withdrawAmount = (((this.invoiceAmount * this.rate_eurusd * this.city.coeff ) * FIAT_PROFIT) * this.rate_usdpln).toFixed(2)
+                            this.itKey++
+                        } else {
+                            alert('Оберіть місто')
+                        }
+                    } else if (this.currency_1.cc === 'USDT' && this.currency_1.type === 'crypto') {
+                            this.withdrawAmount = ((this.invoiceAmount * CRYPTA_PROFIT_EU) * this.rate_usdpln).toFixed(2)
+                            this.itKey++
+                    }
+                } else if (this.currency_2.cc === 'PLN' && this.currency_2.type === 'cash') {
+                    console.log('pln cash')
+                    if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
+                        if(this.city) {
+                            this.withdrawAmount = (((this.invoiceAmount / RATE_UAHUSD) * FIAT_PROFIT) * this.city.coeff * this.rate_usdpln * CASH_VARSHAVA).toFixed(2)
+                            this.itKey++
+
+                        } else {
+                            alert('Оберіть місто')
+                        }
+                    } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
+                        this.withdrawAmount = (((this.invoiceAmount / RATE_UAHUSD ) * FIAT_PROFIT) * this.rate_usdpln * CASH_VARSHAVA).toFixed(2)
+                        this.itKey++
+                    }
+                } else if (this.currency_2.cc === 'USD' && this.currency_2.type === 'payservice') {
+
+                    if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
+                        this.withdrawAmount = ((this.invoiceAmount / RATE_UAHUSD ) * FIAT_PROFIT ).toFixed(2)
+                        this.itKey++
+                    } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
+
+                        if(this.city) {
+                            this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) / RATE_UAHUSD) * FIAT_PROFIT).toFixed(2)
+                            this.itKey++
+                        } else {
+                            alert('Оберіть місто')
+                        }
+
+                    } else if (this.currency_1.cc === 'USD' && this.currency_1.type === 'cash') {
+
+                        if(this.city) {
+                            this.withdrawAmount = ((this.invoiceAmount * this.city.coeff) * FIAT_PROFIT).toFixed(2)
+                            this.itKey++
+                        } else {
+                            alert('Оберіть місто')
+                        }
+
+                    } else if (this.currency_1.cc === 'EUR' && this.currency_1.type === 'cash') {
+
+                        if(this.city) {
+                            this.withdrawAmount = ((this.invoiceAmount * this.rate_eurusd) * this.city.coeff * FIAT_PROFIT).toFixed(2)
+                            this.itKey++
+                        } else {
+                            alert('Оберіть місто')
+                        }
+
+                    } else if (this.currency_1.cc === 'USDT' && this.currency_1.type === 'crypto') {
+
+                        if(this.city) {
+                            this.withdrawAmount = (this.invoiceAmount * CRYPTA_PROFIT_EU).toFixed(2)
+                            this.itKey++
+                        } else {
+                            alert('Оберіть місто')
+                        }
+
+                    }
+
+                } else if (this.currency_2.cc === 'EUR' && this.currency_2.type === 'payservice') {
+
+                    if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
+
+                        this.withdrawAmount = ((this.invoiceAmount / RATE_UAHUSD ) * this.rate_eurusd * FIAT_PROFIT ).toFixed(2)
+                        this.itKey++
+
+                    } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
+
+                        if(this.city) { // ?? Why
+                            this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) / RATE_UAHUSD) * FIAT_PROFIT).toFixed(2)
+                            this.itKey++
+                        } else {
+                            alert('Оберіть місто')
+                        }
+
+                    } else if (this.currency_1.cc === 'USD' && this.currency_1.type === 'cash') {
+                        if(this.city) {
+                            this.withdrawAmount = (((this.invoiceAmount * this.city.coeff) * this.rate_eurusd) * FIAT_PROFIT).toFixed(2)
+                            this.itKey++
+                        } else {
+                            alert('Оберіть місто')
+                        }
+                    } else if (this.currency_1.cc === 'EUR' && this.currency_1.type === 'cash') {
+
+                        if(this.city) {
+                            this.withdrawAmount = ((this.invoiceAmount * this.city.coeff) * FIAT_PROFIT).toFixed(2)
+                            this.itKey++
+                        } else {
+                            alert('Оберіть місто')
+                        }
+
+                    } else if (this.currency_1.cc === 'USDT' && this.currency_1.type === 'crypto') {
+
+                        if(this.city) {
+                            this.withdrawAmount = ((this.invoiceAmount * CRYPTA_PROFIT_EU) * this.rate_eurusd).toFixed(2)
+                            this.itKey++
+                        } else {
+                            alert('Оберіть місто')
+                        }
+
+                    }
+
+                } else if (this.currency_2.cc === 'USDT' && this.currency_2.type === 'crypto') {
+
+                    if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
+
+                        this.withdrawAmount = ((this.invoiceAmount / RATE_UAHUSD) * CRYPTA_PROFIT_UA).toFixed(2)
+                        this.itKey++
+
+                    } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
+
+                        this.withdrawAmount = ((this.invoiceAmount / RATE_UAHUSD) * CRYPTA_PROFIT_UA).toFixed(2)
+                        this.itKey++
+
+                    } else if (this.currency_1.cc === 'USD' && this.currency_1.type === 'cash') {
+
+                        this.withdrawAmount = (this.invoiceAmount * CRYPTA_PROFIT_UA).toFixed(2)
+                        this.itKey++
+
+                    } else if (this.currency_1.cc === 'EUR' && this.currency_1.type === 'cash') {
+
+                        this.withdrawAmount = ((this.invoiceAmount * this.rate_eurusd) * CRYPTA_PROFIT_UA).toFixed(2)
+                        this.itKey++
+
+                    }
+
+                } else if (this.currency_2.cc === 'EUR' && this.currency_2.type === 'bank') {
+
+                    if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
+
+                        this.withdrawAmount = ((this.invoiceAmount / RATE_UAHUSD ) * this.rate_eurusd * FIAT_PROFIT ).toFixed(2)
+                        this.itKey++
+
+                    } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
+
+                        if(this.city) { // ?? Why
+                            this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) / RATE_UAHUSD) * FIAT_PROFIT).toFixed(2)
+                            this.itKey++
+                        } else {
+                            alert('Оберіть місто')
+                        }
+
+                    } else if (this.currency_1.cc === 'USD' && this.currency_1.type === 'cash') {
+                        if(this.city) {
+                            this.withdrawAmount = (((this.invoiceAmount * this.city.coeff) * this.rate_eurusd) * FIAT_PROFIT).toFixed(2)
+                            this.itKey++
+                        } else {
+                            alert('Оберіть місто')
+                        }
+                    } else if (this.currency_1.cc === 'EUR' && this.currency_1.type === 'cash') {
+
+                        if(this.city) {
+                            this.withdrawAmount = ((this.invoiceAmount * this.city.coeff) * FIAT_PROFIT).toFixed(2)
+                            this.itKey++
+                        } else {
+                            alert('Оберіть місто')
+                        }
+
+                    } else if (this.currency_1.cc === 'USDT' && this.currency_1.type === 'crypto') {
+
+                        if(this.city) {
+                            this.withdrawAmount = ((this.invoiceAmount * CRYPTA_PROFIT_EU) * this.rate_eurusd).toFixed(2)
+                            this.itKey++
+                        } else {
+                            alert('Оберіть місто')
+                        }
+
+                    }
+                }
             }
         },
         computed: {
@@ -310,9 +580,34 @@
         },
         watch: {
             invoiceAmount() {
-                console.log(this.invoiceAmount)
+                this.CalcHandler()
+            },
+            currency_1() {
+                this.CalcHandler()
+            },
+            currency_2() {
+                this.CalcHandler()
             }
+
         }
 
     }
 </script>
+
+<style scoped>
+    .vs__open-indicator {
+        fill: rgb(49 46 129) !important;
+    }
+    >>> {
+        --vs-border-radius: 25px;
+        --vs-line-height: 2;
+        /* Actions: house the component controls */
+        --vs-actions-padding: 8px 15px 0;
+        /* Component Controls: Clear, Open Indicator */
+        --vs-controls-color: var(--vs-colors--light);
+        --vs-controls-size: 0.8;
+
+
+    }
+
+</style>

@@ -5,9 +5,9 @@
             <option v-if="!Object.keys(defValue).length" :value="{}" selected >
                 {{ placeholder }}
             </option>
-
+            <option v-else :value="defValue" selected ></option>
             <option
-                v-for="item in itemOptions"
+                v-for="item in items"
                 :key="item.id"
                 :value="item"
                 :selected = "item.id === selectItem.id ? 'true' : '' "
@@ -44,28 +44,18 @@
 
         mounted() {
 
-            //this.selectItem = this.defValue
             if (isProxy(this.defValue)){
                 this.selectItem = toRaw(this.defValue)
             }
-            //this.selectItem = this.defValue
+
             console.log('ssss',this.selectItem)
 
         },
         methods: {
             actionSelectItem() {
                 this.$emit('updateSelect', this.selectItem);
-
-            }
-
-        },
-        computed: {
-            itemOptions() {
-                return this.items.filter(item => item.id !== this.selectItem.id )
             }
         }
-
-
     }
 </script>
 
