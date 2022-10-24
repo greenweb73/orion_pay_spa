@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 input.without-spin-btn::-webkit-outer-spin-button,
 input.without-spin-btn::-webkit-inner-spin-button {
     -webkit-appearance: none;

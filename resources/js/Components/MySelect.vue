@@ -5,10 +5,7 @@
             <option v-if="!Object.keys(defValue).length" :value="{}" selected >
                 {{ placeholder }}
             </option>
-
-            <option v-else :value="defValue" selected >
-
-            </option>
+            <option v-else :value="defValue" selected ></option>
             <option
                 v-for="item in items"
                 :key="item.id"
@@ -25,7 +22,6 @@
 <script>
     import {isProxy, toRaw} from 'vue'
 
-    import {ref} from 'vue'
     export default {
         name: "MySelect",
         props: {
@@ -38,26 +34,20 @@
                 type: String,
                 default: () => ''
             },
-            defValue: {
-                type: Object,
-            }
+            defValue: {}
         },
         data() {
             return {
                 selectItem: {}
             }
         },
-        beforeMount() {
 
-
-        },
         mounted() {
-
 
             if (isProxy(this.defValue)){
                 this.selectItem = toRaw(this.defValue)
             }
-            //this.selectItem = this.defValue
+
             console.log('ssss',this.selectItem)
 
         },
@@ -66,7 +56,6 @@
                 this.$emit('updateSelect', this.selectItem);
             }
         }
-
     }
 </script>
 

@@ -1,4 +1,5 @@
 <template>
+
     <div class=" min-h-screen sm:items-center sm:pt-0 overflow-hidden bg-no-repeat bg-cover"
          style="
     background-position: 50%;
