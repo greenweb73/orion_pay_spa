@@ -68,7 +68,9 @@
                             <div class="px-4 py-5 flex-auto amountInput relative">
                                 <input v-model.number="v$.invoiceAmount.$model" type="text" class="cursor-text without-spin-btn mt-0 block w-full focus:border-black focus:outline-none text-gray-700 border-0 border-b-2 border-gray-200 cursor-pointer focus:ring-0"/>
                                 <div class="input-errors" :key="itKey">
-                                    <div v-if="v$.invoiceAmount.$invalid" style="color: red" class="pt-2 text-sm warning-msg">{{ v$.invoiceAmount.minValue.$message }}</div>
+                                    <div v-if="v$.invoiceAmount.$invalid" style="color: red" class="pt-2 text-sm warning-msg">
+                                        {{ v$.invoiceAmount.minValue.$message }} {{ getSelectedCurrency_1.name }}
+                                    </div>
                                 </div>
                                 <div class="currencyName block text-black">{{ currency_1.name }}</div>
                             </div>
@@ -289,7 +291,7 @@
         validations () {
             return {
                 invoiceAmount: {
-                    minValue: helpers.withMessage(`Мінімальна сума переказу ${this.getSelectedCurrency_1.min_value} ${this.getSelectedCurrency_1.name}`, minValue(this.getSelectedCurrency_1.min_value))
+                    minValue: helpers.withMessage(`Мінімальна сума переказу ${this.getSelectedCurrency_1.min_value}`, minValue(this.getSelectedCurrency_1.min_value))
                 },
             }
         },
@@ -466,6 +468,7 @@
                             this.itKey++
                         } else {
                             alert('Оберіть місто')
+                            console.log(this.getSelectedCurrency_1())
                         }
 
                     }
@@ -551,6 +554,7 @@
                 })
             },
             getSelectedCurrency_1() {
+                console.log(this.currency_1)
                 return {... new Proxy(this.currency_1, {})}
             },
             getSelectedCurrency_2() {
