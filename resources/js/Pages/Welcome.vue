@@ -66,8 +66,10 @@
 
                             </div>
                             <div class="px-4 py-5 flex-auto amountInput relative">
-                                <input v-model.number="invoiceAmount" type="text" class="cursor-text without-spin-btn mt-0 block w-full focus:border-black focus:outline-none text-gray-700 border-0 border-b-2 border-gray-200 cursor-pointer focus:ring-0"/>
-
+                                <input v-model.number="v$.invoiceAmount.$model" type="text" class="cursor-text without-spin-btn mt-0 block w-full focus:border-black focus:outline-none text-gray-700 border-0 border-b-2 border-gray-200 cursor-pointer focus:ring-0"/>
+                                <div class="input-errors" :key="itKey">
+                                    <div v-if="v$.invoiceAmount.$invalid" style="color: red" class="pt-2 text-sm warning-msg">{{ v$.invoiceAmount.minValue.$message }}</div>
+                                </div>
                                 <div class="currencyName block text-black">{{ currency_1.name }}</div>
                             </div>
 
@@ -86,7 +88,6 @@
 
                                     <v-select :options="curTo"
                                               :clearable="false"
-
                                               :value="getSelectedCurrency_2"
                                               :reduce="currency => currency"
                                               v-model="currency_2"
@@ -126,11 +127,14 @@
     import NumberInput from "@/Components/NumberInput.vue";
     import TextInput from "@/Components/TextInput.vue";
     import vSelect from 'vue-select'
+    import { useVuelidate } from '@vuelidate/core'
+
+    import { minValue , helpers} from '@vuelidate/validators'
 
     import 'vue-select/dist/vue-select.css';
 
-
     export default {
+
         name: "Welcome",
         layout: MainLayout,
         components: {
@@ -143,14 +147,16 @@
         },
         data() {
             return {
+                v$: useVuelidate(),
                 user: {},
                 curFrom: [],
                 curTo: [],
                 city: null,
                 currency_1: {},
                 currency_2: {},
-                invoiceAmount: null,
-                withdrawAmount: null,
+                invoiceAmount: 0.00,
+                withdrawAmount: 0.00,
+                invoiceAmountMessage: '',
                 rate_usdpln: 1,
                 rate_eurusd: 1,
                 cities: [
@@ -193,6 +199,7 @@
                         type: 'cash',
                         from: true,
                         to: false,
+                        min_value: 40000
                     },
                     {
                         id: 2,
@@ -200,7 +207,8 @@
                         cc: 'UAH',
                         type: 'bank',
                         from: true,
-                        to: false
+                        to: false,
+                        min_value: 40000
                     },
                     {
                         id: 3,
@@ -208,7 +216,8 @@
                         cc: 'USD',
                         type: 'cash',
                         from: true,
-                        to: false
+                        to: false,
+                        min_value: 1000
                     },
                     {
                         id: 4,
@@ -216,7 +225,8 @@
                         cc: 'EUR',
                         type: 'cash',
                         from: true,
-                        to: false
+                        to: false,
+                        min_value: 1000
                     },
                     {
                         id: 5,
@@ -224,7 +234,8 @@
                         cc: 'USDT',
                         type: 'crypto',
                         from: true,
-                        to: true
+                        to: true,
+                        min_value: 0
                     },
                     {
                         id: 6,
@@ -232,7 +243,8 @@
                         cc: 'PLN',
                         type: 'cash',
                         from: false,
-                        to: true
+                        to: true,
+                        min_value: 0
                     },
                     {
                         id: 7,
@@ -240,7 +252,8 @@
                         cc: 'PLN',
                         type: 'bank',
                         from: false,
-                        to: true
+                        to: true,
+                        min_value: 0
                     },
                     {
                         id: 8,
@@ -248,7 +261,8 @@
                         cc: 'USD',
                         type: 'payservice',
                         from: false,
-                        to: true
+                        to: true,
+                        min_value: 0
                     },
                     {
                         id: 9,
@@ -256,7 +270,8 @@
                         cc: 'EUR',
                         type: 'payservice',
                         from: false,
-                        to: true
+                        to: true,
+                        min_value: 0
                     },
                     {
                         id: 10,
@@ -264,12 +279,21 @@
                         cc: 'EUR',
                         type: 'bank',
                         from: false,
-                        to: true
+                        to: true,
+                        min_value: 0
                     }
                 ],
                 itKey: 1
             }
         },
+        validations () {
+            return {
+                invoiceAmount: {
+                    minValue: helpers.withMessage(`Мінімальна сума переказу ${this.getSelectedCurrency_1.min_value} ${this.getSelectedCurrency_1.name}`, minValue(this.getSelectedCurrency_1.min_value))
+                },
+            }
+        },
+
         async mounted() {
 
             this.curFrom = this.currencies.filter(currency => {
@@ -284,10 +308,10 @@
 
             this.rate_usdpln = await this.getRateCurrency('USD', 'PLN')
             this.rate_eurusd = await this.getRateCurrency('EUR', 'USD')
-            //console.log(await this.getRateCurrency('USD', 'PLN'))
-            //console.log(this.getSelectedCurrency_1())
+
         },
         methods: {
+
             async getRatesData(baseCurrency) {
                // const EXCHANGE_API = 'https://api.exchangerate.host/latest?base=baseCurrency';
                 //const EXCHANGE_API = 'http://api.nbp.pl/api/exchangerates/rates/c/usd/today/?format=json';
@@ -303,8 +327,7 @@
             },
 
             setSelectedCity(city) {
-                this.city = city
-                this.city = city
+               this.city = city
             },
             selectedCurrency_1(currency) {
                 this.currency_1 = currency
@@ -312,62 +335,13 @@
             },
             selectedCurrency_2(currency) {
                 this.currency_2 = currency
-            },
-            getSelectedCurrency_1() {
-                const currency_1 = {...this.currency_1}
-                return currency_1
-            },
-            getSelectedCurrency_2() {
-                const currency_2 = {...this.currency_2}
-                return currency_2
+                this.CalcExchange()
             },
             SetInvoiceAmount(value) {
                 this.invoiceAmount = value
             },
             CalcHandler() {
-            //     if (this.currency_1.cc === 'UAH'
-            //         && this.currency_1.type === 'bank'
-            //         && this.currency_2.cc === 'PLN'
-            //         && this.currency_2.type === 'bank') {
-            //             this.withdrawAmount = (this.invoiceAmount / RATE_UAHUSD) * FIAT_PROFIT * this.rate_usdpln;
-            //     } else if (this.currency_1.cc === 'UAH'
-            //         && this.currency_1.type === 'cash'
-            //         && this.currency_2.cc === 'PLN'
-            //         && this.currency_2.type === 'bank') {
-            //         if(this.city) {
-            //             this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) / RATE_UAHUSD ) * FIAT_PROFIT) * this.rate_usdpln
-            //             this.itKey++
-            //         } else {
-            //             alert('Оберіть місто')
-            //         }
-            //     } else if (this.currency_1.cc === 'USD'
-            //         && this.currency_1.type === 'cash'
-            //         && this.currency_2.cc === 'PLN'
-            //         && this.currency_2.type === 'bank') {
-            //             if(this.city) {
-            //                 this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) * FIAT_PROFIT) * this.rate_usdpln)
-            //                 this.itKey++
-            //             } else {
-            //                 alert('Оберіть місто')
-            //             }
-            //     } else if (this.currency_1.cc === 'EUR'
-            //         && this.currency_1.type === 'cash'
-            //         && this.currency_2.cc === 'PLN'
-            //         && this.currency_2.type === 'bank') {
-            //         if(this.city) {
-            //             this.withdrawAmount = (((this.invoiceAmount * this.rate_eurusd * this.city.coeff ) * FIAT_PROFIT) * this.rate_usdpln)
-            //             this.itKey++
-            //         } else {
-            //             alert('Оберіть місто')
-            //         }
-            //     } else if (this.currency_1.cc === 'USDT'
-            //         && this.currency_1.type === 'crypto'
-            //         && this.currency_2.cc === 'PLN'
-            //         && this.currency_2.type === 'bank') {
-            //             this.withdrawAmount = ((this.invoiceAmount * CRYPTA_PROFIT_EU) * this.rate_usdpln)
-            //             this.itKey++
-            //     }
-            // }
+                console.log(this.invoiceAmountValidate)
                 if( this.currency_2.cc === 'PLN' && this.currency_2.type === 'bank') {
                     if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
                             this.withdrawAmount = ((this.invoiceAmount / RATE_UAHUSD) * FIAT_PROFIT * this.rate_usdpln).toFixed(2);
@@ -397,7 +371,7 @@
                             this.itKey++
                     }
                 } else if (this.currency_2.cc === 'PLN' && this.currency_2.type === 'cash') {
-                    console.log('pln cash')
+
                     if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
                         if(this.city) {
                             this.withdrawAmount = (((this.invoiceAmount / RATE_UAHUSD) * FIAT_PROFIT) * this.city.coeff * this.rate_usdpln * CASH_VARSHAVA).toFixed(2)
@@ -462,7 +436,7 @@
 
                     } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
 
-                        if(this.city) { // ?? Why
+                        if(this.city) {
                             this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) / RATE_UAHUSD) * FIAT_PROFIT).toFixed(2)
                             this.itKey++
                         } else {
@@ -529,7 +503,7 @@
 
                     } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
 
-                        if(this.city) { // ?? Why
+                        if(this.city) {
                             this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) / RATE_UAHUSD) * FIAT_PROFIT).toFixed(2)
                             this.itKey++
                         } else {
@@ -566,7 +540,6 @@
             }
         },
         computed: {
-
             currenciesFrom() {
                 return this.currencies.filter(currency => {
                     return currency.from
@@ -576,6 +549,15 @@
                 return this.currencies.filter(currency => {
                     return !currency.from
                 })
+            },
+            getSelectedCurrency_1() {
+                return {... new Proxy(this.currency_1, {})}
+            },
+            getSelectedCurrency_2() {
+                return {... new Proxy(this.currency_2, {})}
+            },
+            invoiceAmountValidate()  {
+                return {... new Proxy(this.v$.invoiceAmount, {})}
             }
         },
         watch: {
@@ -583,9 +565,14 @@
                 this.CalcHandler()
             },
             currency_1() {
+                //console.log(JSON.parse(JSON.stringify(this.v$.invoiceAmount)).minValue.$message)
+
                 this.CalcHandler()
             },
             currency_2() {
+                this.CalcHandler()
+            },
+            city() {
                 this.CalcHandler()
             }
 
