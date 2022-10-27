@@ -24,7 +24,7 @@
 
         <div class="flex">
             <!-- aside -->
-            <aside class="flex w-72 flex-col space-y-2 bg-transparen p-2" style="height: 90.5vh"
+            <aside class="hidden flex w-72 flex-col space-y-2 bg-transparen p-2" style="height: 90.5vh"
                    x-show="asideOpen">
                 <Link :href="'/'" class="flex items-center space-x-1 rounded-md px-2 py-3 hover:bg-gray-100 hover:text-blue-600">Послуги</Link>
 
@@ -75,6 +75,15 @@
                                 <div class="currencyName block text-black">{{ currency_1.name }}</div>
                             </div>
 
+                            <div>
+                                <div class="px-4 text-blue-700/75 text-lg">Курси валют</div>
+                                <ul class="text-gray-700 text-sm px-4">
+                                    <li>Курс UAH/USD: {{RATE_UAHUSD}}</li>
+                                    <li>Курс USD/PLN: {{rate_usdpln}}</li>
+                                    <li>Курс EUR/USD: {{rate_eurusd}}</li>
+                                </ul>
+                            </div>
+
 
 
                         </div>
@@ -116,8 +125,7 @@
 </template>
 
 <script>
-    const EXCHANGE_API = 'https://api.exchangerate.host/latest?base=baseCurrency';
-    const RATE_UAHUSD = 40.6
+    const EXCHANGE_API = 'https://api.exchangerate.host/latest?base=';
     const FIAT_PROFIT = 0.96;
     const CRYPTA_PROFIT_UA = 0.98;
     const CRYPTA_PROFIT_EU = 0.97;
@@ -159,8 +167,9 @@
                 invoiceAmount: 0.00,
                 withdrawAmount: 0.00,
                 invoiceAmountMessage: '',
-                rate_usdpln: 1,
-                rate_eurusd: 1,
+                RATE_UAHUSD: 40.6,
+                rate_usdpln: null,
+                rate_eurusd: null,
                 cities: [
                     {
                         id: 1,
@@ -295,7 +304,11 @@
                 },
             }
         },
+        async beforeMount() {
+            this.rate_usdpln = await this.getRateCurrency('USD', 'PLN')
 
+            this.rate_eurusd = await this.getRateCurrency('EUR', 'USD')
+        },
         async mounted() {
 
             this.curFrom = this.currencies.filter(currency => {
@@ -304,12 +317,11 @@
             this.currency_1 = this.curFrom[1]
 
             this.curTo = this.currencies.filter(currency => {
-                return !currency.from
+                return currency.to
             })
             this.currency_2 = this.curTo[1]
 
-            this.rate_usdpln = await this.getRateCurrency('USD', 'PLN')
-            this.rate_eurusd = await this.getRateCurrency('EUR', 'USD')
+
 
         },
         methods: {
@@ -318,13 +330,17 @@
                // const EXCHANGE_API = 'https://api.exchangerate.host/latest?base=baseCurrency';
                 //const EXCHANGE_API = 'http://api.nbp.pl/api/exchangerates/rates/c/usd/today/?format=json';
 
-                const response2 = await fetch(EXCHANGE_API).then(data => {
+                const response2 = await fetch(EXCHANGE_API + baseCurrency).then(data => {
+
                     return data;
                 })
+
                 return await response2.json();
             },
             async getRateCurrency(base_currency, rate_currency ) {
+
                 const ratesData = await this.getRatesData(base_currency)
+
                 return ratesData.rates[rate_currency]
             },
 
@@ -342,204 +358,209 @@
             SetInvoiceAmount(value) {
                 this.invoiceAmount = value
             },
-            CalcHandler() {
-                console.log(this.invoiceAmountValidate)
-                if( this.currency_2.cc === 'PLN' && this.currency_2.type === 'bank') {
-                    if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
-                            this.withdrawAmount = ((this.invoiceAmount / RATE_UAHUSD) * FIAT_PROFIT * this.rate_usdpln).toFixed(2);
-                    } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
-                        if(this.city) {
-                            this.withdrawAmount = ((((this.invoiceAmount * this.city.coeff ) / RATE_UAHUSD ) * FIAT_PROFIT) * this.rate_usdpln).toFixed(2)
-                            this.itKey++
-                        } else {
-                            alert('Оберіть місто')
-                        }
-                    } else if (this.currency_1.cc === 'USD' && this.currency_1.type === 'cash') {
+            async CalcHandler() {
+                if (!this.rate_usdpln) {
+                    this.rate_usdpln = await this.getRateCurrency('USD', 'PLN')
+                }
+
+                    if( this.currency_2.cc === 'PLN' && this.currency_2.type === 'bank') {
+                        if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
+
+                                this.withdrawAmount = ((this.invoiceAmount / this.RATE_UAHUSD) * FIAT_PROFIT * this.rate_usdpln)
+
+                        } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
                             if(this.city) {
-                                this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) * FIAT_PROFIT) * this.rate_usdpln).toFixed(2)
+                                this.withdrawAmount = ((((this.invoiceAmount * this.city.coeff ) / this.RATE_UAHUSD ) * FIAT_PROFIT) * this.rate_usdpln).toFixed(2)
                                 this.itKey++
                             } else {
                                 alert('Оберіть місто')
                             }
-                    } else if (this.currency_1.cc === 'EUR' && this.currency_1.type === 'cash') {
-                        if(this.city) {
-                            this.withdrawAmount = (((this.invoiceAmount * this.rate_eurusd * this.city.coeff ) * FIAT_PROFIT) * this.rate_usdpln).toFixed(2)
-                            this.itKey++
-                        } else {
-                            alert('Оберіть місто')
+                        } else if (this.currency_1.cc === 'USD' && this.currency_1.type === 'cash') {
+                                if(this.city) {
+                                    this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) * FIAT_PROFIT) * this.rate_usdpln).toFixed(2)
+                                    this.itKey++
+                                } else {
+                                    alert('Оберіть місто')
+                                }
+                        } else if (this.currency_1.cc === 'EUR' && this.currency_1.type === 'cash') {
+                            if(this.city) {
+                                this.withdrawAmount = (((this.invoiceAmount * this.rate_eurusd * this.city.coeff ) * FIAT_PROFIT) * this.rate_usdpln).toFixed(2)
+                                this.itKey++
+                            } else {
+                                alert('Оберіть місто')
+                            }
+                        } else if (this.currency_1.cc === 'USDT' && this.currency_1.type === 'crypto') {
+                                this.withdrawAmount = ((this.invoiceAmount * CRYPTA_PROFIT_EU) * this.rate_usdpln).toFixed(2)
+                                this.itKey++
                         }
-                    } else if (this.currency_1.cc === 'USDT' && this.currency_1.type === 'crypto') {
-                            this.withdrawAmount = ((this.invoiceAmount * CRYPTA_PROFIT_EU) * this.rate_usdpln).toFixed(2)
+                    } else if (this.currency_2.cc === 'PLN' && this.currency_2.type === 'cash') {
+
+                        if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
+                            if(this.city) {
+                                this.withdrawAmount = (((this.invoiceAmount / this.RATE_UAHUSD) * FIAT_PROFIT) * this.city.coeff * this.rate_usdpln * CASH_VARSHAVA).toFixed(2)
+                                this.itKey++
+
+                            } else {
+                                alert('Оберіть місто')
+                            }
+                        } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
+                            this.withdrawAmount = (((this.invoiceAmount / this.RATE_UAHUSD ) * FIAT_PROFIT) * this.rate_usdpln * CASH_VARSHAVA).toFixed(2)
                             this.itKey++
+                        }
+                    } else if (this.currency_2.cc === 'USD' && this.currency_2.type === 'payservice') {
+
+                        if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
+                            this.withdrawAmount = ((this.invoiceAmount / this.RATE_UAHUSD ) * FIAT_PROFIT ).toFixed(2)
+                            this.itKey++
+                        } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
+
+                            if(this.city) {
+                                this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) / this.RATE_UAHUSD) * FIAT_PROFIT).toFixed(2)
+                                this.itKey++
+                            } else {
+                                alert('Оберіть місто')
+                            }
+
+                        } else if (this.currency_1.cc === 'USD' && this.currency_1.type === 'cash') {
+
+                            if(this.city) {
+                                this.withdrawAmount = ((this.invoiceAmount * this.city.coeff) * FIAT_PROFIT).toFixed(2)
+                                this.itKey++
+                            } else {
+                                alert('Оберіть місто')
+                            }
+
+                        } else if (this.currency_1.cc === 'EUR' && this.currency_1.type === 'cash') {
+
+                            if(this.city) {
+                                this.withdrawAmount = ((this.invoiceAmount * this.rate_eurusd) * this.city.coeff * FIAT_PROFIT).toFixed(2)
+                                this.itKey++
+                            } else {
+                                alert('Оберіть місто')
+                            }
+
+                        } else if (this.currency_1.cc === 'USDT' && this.currency_1.type === 'crypto') {
+
+                            if(this.city) {
+                                this.withdrawAmount = (this.invoiceAmount * CRYPTA_PROFIT_EU).toFixed(2)
+                                this.itKey++
+                            } else {
+                                alert('Оберіть місто')
+                            }
+
+                        }
+
+                    } else if (this.currency_2.cc === 'EUR' && this.currency_2.type === 'payservice') {
+
+                        if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
+
+                            this.withdrawAmount = ((this.invoiceAmount / this.RATE_UAHUSD ) * this.rate_eurusd * FIAT_PROFIT ).toFixed(2)
+                            this.itKey++
+
+                        } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
+
+                            if(this.city) {
+                                this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) / this.RATE_UAHUSD) * FIAT_PROFIT).toFixed(2)
+                                this.itKey++
+                            } else {
+                                alert('Оберіть місто')
+                            }
+
+                        } else if (this.currency_1.cc === 'USD' && this.currency_1.type === 'cash') {
+                            if(this.city) {
+                                this.withdrawAmount = (((this.invoiceAmount * this.city.coeff) * this.rate_eurusd) * FIAT_PROFIT).toFixed(2)
+                                this.itKey++
+                            } else {
+                                alert('Оберіть місто')
+                            }
+                        } else if (this.currency_1.cc === 'EUR' && this.currency_1.type === 'cash') {
+
+                            if(this.city) {
+                                this.withdrawAmount = ((this.invoiceAmount * this.city.coeff) * FIAT_PROFIT).toFixed(2)
+                                this.itKey++
+                            } else {
+                                alert('Оберіть місто')
+                            }
+
+                        } else if (this.currency_1.cc === 'USDT' && this.currency_1.type === 'crypto') {
+
+                            if(this.city) {
+                                this.withdrawAmount = ((this.invoiceAmount * CRYPTA_PROFIT_EU) * this.rate_eurusd).toFixed(2)
+                                this.itKey++
+                            } else {
+                                alert('Оберіть місто')
+                                console.log(this.getSelectedCurrency_1())
+                            }
+
+                        }
+
+                    } else if (this.currency_2.cc === 'USDT' && this.currency_2.type === 'crypto') {
+
+                        if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
+
+                            this.withdrawAmount = ((this.invoiceAmount / this.RATE_UAHUSD) * CRYPTA_PROFIT_UA).toFixed(2)
+                            this.itKey++
+
+                        } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
+
+                            this.withdrawAmount = ((this.invoiceAmount / this.RATE_UAHUSD) * CRYPTA_PROFIT_UA).toFixed(2)
+                            this.itKey++
+
+                        } else if (this.currency_1.cc === 'USD' && this.currency_1.type === 'cash') {
+
+                            this.withdrawAmount = (this.invoiceAmount * CRYPTA_PROFIT_UA).toFixed(2)
+                            this.itKey++
+
+                        } else if (this.currency_1.cc === 'EUR' && this.currency_1.type === 'cash') {
+
+                            this.withdrawAmount = ((this.invoiceAmount * this.rate_eurusd) * CRYPTA_PROFIT_UA).toFixed(2)
+                            this.itKey++
+
+                        }
+
+                    } else if (this.currency_2.cc === 'EUR' && this.currency_2.type === 'bank') {
+
+                        if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
+
+                            this.withdrawAmount = ((this.invoiceAmount / this.RATE_UAHUSD ) * this.rate_eurusd * FIAT_PROFIT ).toFixed(2)
+                            this.itKey++
+
+                        } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
+
+                            if(this.city) {
+                                this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) / this.RATE_UAHUSD) * FIAT_PROFIT).toFixed(2)
+                                this.itKey++
+                            } else {
+                                alert('Оберіть місто')
+                            }
+
+                        } else if (this.currency_1.cc === 'USD' && this.currency_1.type === 'cash') {
+                            if(this.city) {
+                                this.withdrawAmount = (((this.invoiceAmount * this.city.coeff) * this.rate_eurusd) * FIAT_PROFIT).toFixed(2)
+                                this.itKey++
+                            } else {
+                                alert('Оберіть місто')
+                            }
+                        } else if (this.currency_1.cc === 'EUR' && this.currency_1.type === 'cash') {
+
+                            if(this.city) {
+                                this.withdrawAmount = ((this.invoiceAmount * this.city.coeff) * FIAT_PROFIT).toFixed(2)
+                                this.itKey++
+                            } else {
+                                alert('Оберіть місто')
+                            }
+
+                        } else if (this.currency_1.cc === 'USDT' && this.currency_1.type === 'crypto') {
+
+                            if(this.city) {
+                                this.withdrawAmount = ((this.invoiceAmount * CRYPTA_PROFIT_EU) * this.rate_eurusd).toFixed(2)
+                                this.itKey++
+                            } else {
+                                alert('Оберіть місто')
+                            }
+
+                        }
                     }
-                } else if (this.currency_2.cc === 'PLN' && this.currency_2.type === 'cash') {
-
-                    if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
-                        if(this.city) {
-                            this.withdrawAmount = (((this.invoiceAmount / RATE_UAHUSD) * FIAT_PROFIT) * this.city.coeff * this.rate_usdpln * CASH_VARSHAVA).toFixed(2)
-                            this.itKey++
-
-                        } else {
-                            alert('Оберіть місто')
-                        }
-                    } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
-                        this.withdrawAmount = (((this.invoiceAmount / RATE_UAHUSD ) * FIAT_PROFIT) * this.rate_usdpln * CASH_VARSHAVA).toFixed(2)
-                        this.itKey++
-                    }
-                } else if (this.currency_2.cc === 'USD' && this.currency_2.type === 'payservice') {
-
-                    if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
-                        this.withdrawAmount = ((this.invoiceAmount / RATE_UAHUSD ) * FIAT_PROFIT ).toFixed(2)
-                        this.itKey++
-                    } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
-
-                        if(this.city) {
-                            this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) / RATE_UAHUSD) * FIAT_PROFIT).toFixed(2)
-                            this.itKey++
-                        } else {
-                            alert('Оберіть місто')
-                        }
-
-                    } else if (this.currency_1.cc === 'USD' && this.currency_1.type === 'cash') {
-
-                        if(this.city) {
-                            this.withdrawAmount = ((this.invoiceAmount * this.city.coeff) * FIAT_PROFIT).toFixed(2)
-                            this.itKey++
-                        } else {
-                            alert('Оберіть місто')
-                        }
-
-                    } else if (this.currency_1.cc === 'EUR' && this.currency_1.type === 'cash') {
-
-                        if(this.city) {
-                            this.withdrawAmount = ((this.invoiceAmount * this.rate_eurusd) * this.city.coeff * FIAT_PROFIT).toFixed(2)
-                            this.itKey++
-                        } else {
-                            alert('Оберіть місто')
-                        }
-
-                    } else if (this.currency_1.cc === 'USDT' && this.currency_1.type === 'crypto') {
-
-                        if(this.city) {
-                            this.withdrawAmount = (this.invoiceAmount * CRYPTA_PROFIT_EU).toFixed(2)
-                            this.itKey++
-                        } else {
-                            alert('Оберіть місто')
-                        }
-
-                    }
-
-                } else if (this.currency_2.cc === 'EUR' && this.currency_2.type === 'payservice') {
-
-                    if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
-
-                        this.withdrawAmount = ((this.invoiceAmount / RATE_UAHUSD ) * this.rate_eurusd * FIAT_PROFIT ).toFixed(2)
-                        this.itKey++
-
-                    } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
-
-                        if(this.city) {
-                            this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) / RATE_UAHUSD) * FIAT_PROFIT).toFixed(2)
-                            this.itKey++
-                        } else {
-                            alert('Оберіть місто')
-                        }
-
-                    } else if (this.currency_1.cc === 'USD' && this.currency_1.type === 'cash') {
-                        if(this.city) {
-                            this.withdrawAmount = (((this.invoiceAmount * this.city.coeff) * this.rate_eurusd) * FIAT_PROFIT).toFixed(2)
-                            this.itKey++
-                        } else {
-                            alert('Оберіть місто')
-                        }
-                    } else if (this.currency_1.cc === 'EUR' && this.currency_1.type === 'cash') {
-
-                        if(this.city) {
-                            this.withdrawAmount = ((this.invoiceAmount * this.city.coeff) * FIAT_PROFIT).toFixed(2)
-                            this.itKey++
-                        } else {
-                            alert('Оберіть місто')
-                        }
-
-                    } else if (this.currency_1.cc === 'USDT' && this.currency_1.type === 'crypto') {
-
-                        if(this.city) {
-                            this.withdrawAmount = ((this.invoiceAmount * CRYPTA_PROFIT_EU) * this.rate_eurusd).toFixed(2)
-                            this.itKey++
-                        } else {
-                            alert('Оберіть місто')
-                            console.log(this.getSelectedCurrency_1())
-                        }
-
-                    }
-
-                } else if (this.currency_2.cc === 'USDT' && this.currency_2.type === 'crypto') {
-
-                    if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
-
-                        this.withdrawAmount = ((this.invoiceAmount / RATE_UAHUSD) * CRYPTA_PROFIT_UA).toFixed(2)
-                        this.itKey++
-
-                    } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
-
-                        this.withdrawAmount = ((this.invoiceAmount / RATE_UAHUSD) * CRYPTA_PROFIT_UA).toFixed(2)
-                        this.itKey++
-
-                    } else if (this.currency_1.cc === 'USD' && this.currency_1.type === 'cash') {
-
-                        this.withdrawAmount = (this.invoiceAmount * CRYPTA_PROFIT_UA).toFixed(2)
-                        this.itKey++
-
-                    } else if (this.currency_1.cc === 'EUR' && this.currency_1.type === 'cash') {
-
-                        this.withdrawAmount = ((this.invoiceAmount * this.rate_eurusd) * CRYPTA_PROFIT_UA).toFixed(2)
-                        this.itKey++
-
-                    }
-
-                } else if (this.currency_2.cc === 'EUR' && this.currency_2.type === 'bank') {
-
-                    if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
-
-                        this.withdrawAmount = ((this.invoiceAmount / RATE_UAHUSD ) * this.rate_eurusd * FIAT_PROFIT ).toFixed(2)
-                        this.itKey++
-
-                    } else if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'cash') {
-
-                        if(this.city) {
-                            this.withdrawAmount = (((this.invoiceAmount * this.city.coeff ) / RATE_UAHUSD) * FIAT_PROFIT).toFixed(2)
-                            this.itKey++
-                        } else {
-                            alert('Оберіть місто')
-                        }
-
-                    } else if (this.currency_1.cc === 'USD' && this.currency_1.type === 'cash') {
-                        if(this.city) {
-                            this.withdrawAmount = (((this.invoiceAmount * this.city.coeff) * this.rate_eurusd) * FIAT_PROFIT).toFixed(2)
-                            this.itKey++
-                        } else {
-                            alert('Оберіть місто')
-                        }
-                    } else if (this.currency_1.cc === 'EUR' && this.currency_1.type === 'cash') {
-
-                        if(this.city) {
-                            this.withdrawAmount = ((this.invoiceAmount * this.city.coeff) * FIAT_PROFIT).toFixed(2)
-                            this.itKey++
-                        } else {
-                            alert('Оберіть місто')
-                        }
-
-                    } else if (this.currency_1.cc === 'USDT' && this.currency_1.type === 'crypto') {
-
-                        if(this.city) {
-                            this.withdrawAmount = ((this.invoiceAmount * CRYPTA_PROFIT_EU) * this.rate_eurusd).toFixed(2)
-                            this.itKey++
-                        } else {
-                            alert('Оберіть місто')
-                        }
-
-                    }
-                }
             }
         },
         computed: {
