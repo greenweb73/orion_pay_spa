@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+input.without-spin-btn::-webkit-outer-spin-button,
+input.without-spin-btn::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input.without-spin-btn[type=number] {
+    -moz-appearance: textfield;
+}
+
+.amountInput .currencyName {
+    position: absolute;
+    top: 27px;
+    right: 0px;
+}
+
+.container-fluid {
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+}
+.logo {
+    img {
+        width: 45px;
+        height: auto;
+        @media (min-width: 640px) {
+            width: 55px;
+        }
+    }
+}
+
+.city-select {
+    top: 120px;
+    left: 15px;
+    position:absolute;
+    @media (min-width: 640px) {
+        position: relative;
+        top: unset;
+        left: unset;
+    }
+}

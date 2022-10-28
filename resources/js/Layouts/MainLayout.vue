@@ -6,7 +6,7 @@
     background-image: url('/images/orion-constellation.jpg');
     height: 350px;
   ">
-        <div class="container  mx-auto">
+        <div class="container-fluid md:container mx-auto">
             <slot />
         </div>
 
