@@ -61,7 +61,7 @@
             </aside>
 
             <!-- main content page -->
-            <div class="w-full p-4">
+            <div class="w-full p-4 z-0">
 
                 <dl class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
 
@@ -132,14 +132,41 @@
                                 <div class="currencyName block text-black">{{ currency_2.name }}</div>
                             </div>
                             <div class="bottonBlock flex flex-auto justify-center pt-4 pb-6">
-                                <button class="btn px-10 w-80 py-4 uppercase text-white hover:bg-indigo-800 bg-indigo-900 tracking-wide rounded-lg">Подати заявку</button>
+                                <button @click.prevent = "isModalOrder = !isModalOrder" class="btn px-10 w-80 py-4 uppercase text-white hover:bg-indigo-800 bg-indigo-900 tracking-wide rounded-lg">Подати заявку</button>
                             </div>
                         </div>
                     </div>
                 </dl>
             </div>
         </div>
+        <my-modal :isModalOpen="isModalOrder" @modalClose="isModalOrder = isModalClose">
+            <h2 class="max-w-[600px] pb-6 pt-6 text-center">Залиште ваш номер телефону або телеграм і ми зв'яжемось з вами для надання детальної інформації
+            </h2>
+            <form class="w-full max-w-sm mx-auto">
+                <div class="relative z-0 mb-6 w-full group">
+                    <input v-model="v$.formOrder.phone.$model" type="text" name="floating_email" id="floating_phone"
+                           :class="[v$.formOrder.phone.$error ? 'dark:focus:border-red' : 'dark:focus:border-blue-500'   ]"
+                           class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600  focus:outline-none focus:ring-0 peer" placeholder=" " required />
+                    <label for="floating_phone" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Телефон +380 XX XXX XX XX</label>
+                </div>
+                <div class="relative z-0 mb-6 w-full group">
+                    <input v-model="formOrder.telegram_nik" type="text"  id="floating_telegram" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                    <label for="floating_telegram" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Телеграм ( @MyTelegramNik )</label>
+                </div>
+
+
+                <div class="md:flex justify-center md:items-center pb-6 mt-8">
+
+                    <div class="md:w-1/2 text-center">
+                        <button class="shadow bg-indigo-700 hover:bg-indigo-600 focus:shadow-outline focus:outline-none text-white font-bold py-3 px-10 rounded" type="button">
+                            Відправити
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </my-modal>
     </main>
+
 
 
 </template>
@@ -157,6 +184,7 @@
     import NumberInput from "@/Components/NumberInput.vue";
     import TextInput from "@/Components/TextInput.vue";
     import vSelect from 'vue-select'
+    import MyModal from "@/Components/MyModal.vue";
     import { useVuelidate } from '@vuelidate/core'
 
     import { minValue , helpers} from '@vuelidate/validators'
@@ -173,7 +201,8 @@
             MySelect,
             NumberInput,
             TextInput,
-            vSelect
+            vSelect,
+            MyModal
         },
         data() {
             return {
@@ -191,6 +220,11 @@
                 rate_usdpln: null,
                 rate_eurusd: null,
                 isOpenMobileMenu: false,
+                isModalOrder: false,
+                formOrder: {
+                    phone: null,
+                    telegram_nik: null,
+                },
                 cities: [
                     {
                         id: 1,
@@ -323,6 +357,12 @@
                 invoiceAmount: {
                     minValue: helpers.withMessage(`Мінімальна сума переказу ${this.getSelectedCurrency_1.min_value}`, minValue(this.getSelectedCurrency_1.min_value))
                 },
+                formOrder: {
+                    phone: {
+                        phoneValid: this.validPhone
+                    }
+                }
+
             }
         },
         async beforeMount() {
@@ -346,6 +386,11 @@
 
         },
         methods: {
+
+            validPhone(value) {
+                const regexp = /^(\+3|)[0-9]{10,11}$/;
+                return regexp.test(value)
+            },
 
             async getRatesData(baseCurrency) {
                // const EXCHANGE_API = 'https://api.exchangerate.host/latest?base=baseCurrency';
@@ -623,6 +668,16 @@
             },
             city() {
                 this.CalcHandler()
+            },
+            isModalOrder() {
+                if (this.isModalOrder) {
+                    document.body.style.overflow = 'hidden'
+                } else {
+                    setTimeout(()=>{
+                        document.body.style.overflow = ''
+                    }, 500)
+
+                }
             }
 
         }
