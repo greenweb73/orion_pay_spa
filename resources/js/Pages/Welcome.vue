@@ -32,10 +32,10 @@
 
         <div class="flex">
             <!-- aside -->
-            <aside :class="[isOpenMobileMenu ? ['z-20','translate-x-0', 'mob-menu-open','bg-white', 'text-blue-700'] : '']" class="absolute inset-y-0 left-0 transform -translate-x-full lg:relative lg:translate-x-0 transition duration-200 ease-in-out md:flex w-72 flex-col space-y-2 bg-transparen p-2" style="height: 90.5vh">
-                <div class="relative">
-                    <div class="flex w-100 justify-end md:hidden">
-                        <button class="flex  text-white text-4xl font-bold opacity-70 hover:opacity-100 duration-300"
+            <aside :class="[isOpenMobileMenu ? ['h-screen','z-20','translate-x-0', 'mob-menu-open','bg-white', 'text-blue-700'] : ['h-96','-translate-x-full']]" class="absolute inset-y-0 left-0 transform  lg:relative lg:translate-x-0 transition duration-200 ease-in-out md:flex w-72 flex-col space-y-2 bg-transparen p-2" >
+                <div class="relative py-6 flex flex-col justify-center">
+                    <div class="flex w-100 justify-end lg:hidden">
+                        <button class="flex text-blue-700 text-4xl font-bold opacity-70 hover:opacity-100 duration-300"
                                 @click="isOpenMobileMenu = !isOpenMobileMenu">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                  stroke="currentColor"
@@ -96,8 +96,8 @@
                             </div>
 
                             <div>
-                                <div class="px-4 text-blue-700/75 text-lg">Курси валют</div>
-                                <ul class="text-gray-700 text-sm px-4">
+                                <div class="px-4 mb-1 text-blue-700/75 text-lg">Курси валют</div>
+                                <ul class="text-gray-700/75 text-sm px-4">
                                     <li>Курс UAH/USD: {{RATE_UAHUSD}}</li>
                                     <li>Курс USD/PLN: {{rate_usdpln}}</li>
                                     <li>Курс EUR/USD: {{rate_eurusd}}</li>
