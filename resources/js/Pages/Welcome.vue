@@ -88,7 +88,7 @@
                             <div class="px-4 py-5 flex-auto amountInput relative">
                                 <input v-model.number="v$.invoiceAmount.$model" type="text" class="cursor-text without-spin-btn mt-0 block w-full focus:border-black focus:outline-none text-gray-700 border-0 border-b-2 border-gray-200 cursor-pointer focus:ring-0"/>
                                 <div class="input-errors" :key="itKey">
-                                    <div v-if="v$.invoiceAmount.$invalid" style="color: red" class="pt-2 text-sm warning-msg">
+                                    <div v-if="v$.invoiceAmount.$error" style="color: red" class="pt-2 text-sm warning-msg">
                                         {{ v$.invoiceAmount.minValue.$message }} {{ getSelectedCurrency_1.name }}
                                     </div>
                                 </div>
@@ -145,13 +145,21 @@
             <form class="w-full max-w-sm mx-auto">
                 <div class="relative z-0 mb-6 w-full group">
                     <input v-model="v$.formOrder.phone.$model" type="text" name="floating_email" id="floating_phone"
-                           :class="[v$.formOrder.phone.$error ? 'dark:focus:border-red' : 'dark:focus:border-blue-500'   ]"
-                           class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600  focus:outline-none focus:ring-0 peer" placeholder=" " required />
+                           :class="[v$.formOrder.phone.$error ? 'border-red-600' : ''   ]"
+                           class="dark:focus:border-blue-500 block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600  focus:outline-none focus:ring-0 peer" placeholder=" " required />
                     <label for="floating_phone" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Телефон +380 XX XXX XX XX</label>
+                    <div v-if="v$.formOrder.phone.$error" class="text-red-600 input-errors pt-2 text-sm warning-msg">
+                            {{ v$.formOrder.phone.phoneValid.$message }}
+                    </div>
                 </div>
                 <div class="relative z-0 mb-6 w-full group">
-                    <input v-model="formOrder.telegram_nik" type="text"  id="floating_telegram" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                    <label for="floating_telegram" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Телеграм ( @MyTelegramNik )</label>
+                    <input v-model="v$.formOrder.telegram.$model" type="text"  id="floating_telegram"
+                           :class="[v$.formOrder.telegram.$error ? 'border-rose-600' : ''   ]"
+                           class="dark:focus:border-blue-500 block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600  focus:outline-none focus:ring-0 peer" placeholder=" " required />
+                    <label for="floating_telegram" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Телеграм ( @YourTelegramNik )</label>
+                    <div v-if="v$.formOrder.telegram.$error" class="text-red-600 input-errors pt-2 text-sm warning-msg">
+                        {{ v$.formOrder.telegram.telegramValid.$message }}
+                    </div>
                 </div>
 
 
@@ -223,7 +231,7 @@
                 isModalOrder: false,
                 formOrder: {
                     phone: null,
-                    telegram_nik: null,
+                    telegram: null,
                 },
                 cities: [
                     {
@@ -355,11 +363,15 @@
         validations () {
             return {
                 invoiceAmount: {
-                    minValue: helpers.withMessage(`Мінімальна сума переказу ${this.getSelectedCurrency_1.min_value}`, minValue(this.getSelectedCurrency_1.min_value))
+                    minValue: helpers.withMessage(`Мінімальна сума переказу ${this.getSelectedCurrency_1.min_value}`,
+                        minValue(this.getSelectedCurrency_1.min_value))
                 },
                 formOrder: {
                     phone: {
-                        phoneValid: this.validPhone
+                        phoneValid: helpers.withMessage('Не коректний номер телефону', this.validPhone)
+                    },
+                    telegram: {
+                        telegramValid: helpers.withMessage('Не коректний телеграм нікнейм', this.validTelegramNik)
                     }
                 }
 
@@ -388,8 +400,13 @@
         methods: {
 
             validPhone(value) {
-                const regexp = /^(\+3|)[0-9]{10,11}$/;
+                let regexp = /^(\+3|)[0-9]{10,11}$/;
                 return regexp.test(value)
+            },
+            validTelegramNik(value) {
+
+                let regexp2 = /.*\B@(?=\w{5,32}\b)[a-zA-Z0-9]+(?:_[a-zA-Z0-9]+)*.*/gm;
+                return regexp2.test(value)
             },
 
             async getRatesData(baseCurrency) {
@@ -685,7 +702,8 @@
     }
 </script>
 
-<style  scoped>
+<style scoped>
+
     .vs__open-indicator {
         fill: rgb(49 46 129) !important;
     }
