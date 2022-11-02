@@ -25,6 +25,7 @@ Route::get('/', function () {
 });
 
 Route::get('/faqs', [\App\Http\Controllers\FaqController::class, 'index'])->name('faq.index');
+Route::post('/orders', [\App\Http\Controllers\OrderController::class, 'store'])->name('order.store');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
