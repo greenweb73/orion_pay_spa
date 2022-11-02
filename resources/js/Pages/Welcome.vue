@@ -75,7 +75,7 @@
                             </div>
 
                             <div class="px-4 py-5 flex-auto text-blue-600">
-                                <div class="currency-select justify-center w-90 px-3 py-3 rounded-md text-blue-600 cursor-pointer">
+                                <div class="currency-select justify-center w-90 px-1 md:px-3 py-3 rounded-md text-blue-600 cursor-pointer">
                                     <v-select :options="curFrom"
                                               :clearable="false"
                                               label="name"
@@ -119,7 +119,7 @@
                                 <h2 class="text-indigo-100 tracking-wide text-3xl font-bold">Отримуєте</h2>
                             </div>
                             <div class="px-4 py-5 flex-auto text-blue-600">
-                                <div class="currency-select justify-center w-90 px-4 py-3 rounded-md text-blue-600 cursor-pointer">
+                                <div class="currency-select justify-center w-90 px-1 md:px-3 py-3 rounded-md text-blue-600 cursor-pointer">
 
                                     <v-select :options="curTo"
                                               :clearable="false"
@@ -171,7 +171,7 @@
                 <div class="md:flex justify-center md:items-center pb-6 mt-8">
 
                     <div class="md:w-1/2 text-center">
-                        <button @click.prevent="sendHandler" class="shadow bg-indigo-700 hover:bg-indigo-600 focus:shadow-outline focus:outline-none text-white font-bold py-3 px-10 rounded" type="button">
+                        <button @click.prevent="submitHandler" class="shadow bg-indigo-700 hover:bg-indigo-600 focus:shadow-outline focus:outline-none text-white font-bold py-3 px-10 rounded" type="button">
                             Відправити
                         </button>
                     </div>
@@ -436,8 +436,25 @@
 
                 return ratesData.rates[rate_currency]
             },
-            sendHandler() {
+            async submitHandler() {
 
+
+                try {
+                    await Inertia.post('/orders', {
+                        city: this.formOrder.city,
+                        currency_from: this.currency_1,
+                        currency_to: this.currency_2,
+                        invoiceAmount: this.formOrder.invoiceAmount,
+                        withdrawAmount: this.formOrder.withdrawAmount,
+                        phone: this.formOrder.phone,
+                        telegram: this.formOrder.telegram
+                    })
+                    this.modalActive = false
+                    this.formOrder.invoiceAmount = 0
+                    this.formOrder.withdrawAmount = 0
+                } catch (e) {
+
+                }
 
                 console.log(this.formOrder.city.name)
             },
