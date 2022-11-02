@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+input.without-spin-btn::-webkit-outer-spin-button,
+input.without-spin-btn::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input.without-spin-btn[type=number] {
+    -moz-appearance: textfield;
+}
+
+.amountInput {
+    margin-left: 1.8rem;
+    margin-right: 1.8rem;
+}
+
+.amountInput .currencyName {
+    position: absolute;
+    top: 27px;
+    right: 0px;
+}
+
+.container-fluid {
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.logo img {
+    width: 45px;
+    height: auto;
+}
+@media screen and (min-width: 640px) {
+    .logo img {
+        width: 55px;
+    }
+    .selectDiv {
+        position: relative !important;
+    }
+}
+
+.selectDiv {
+    top: 0px;
+    left: 5px;
+    position:absolute;
+}
+
+.selectDiv .city-select::after {
+    content: '>';
+    font: 18px "Consolas", monospace;
+    color: rgb(255 255 255 / 82%);
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+    right: 12px;
+    /*Adjust for position however you want*/
+
+    top: 12px;
+    padding: 0 0 2px;
+    /*left line */
+
+    position: absolute;
+    pointer-events: none;
+}
+.selectDiv.open .city-select:after {
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+}
+
+select::-ms-expand {
+    display: none;
+}
+
+.city-select {
+    top: 120px;
+    left: 15px;
+    position:absolute;
+}
+
+.city-select select {
+    border: 3px solid #fff;
+    background: #726d9f;
+}
+
+@media screen and (min-width: 640px) {
+    .city-select {
+        position: relative;
+        top: unset;
+        left: unset;
+    }
+}
+
+
+.modal-enter-active,
+.modal-leave-active {
+    transition: all 0.25s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+    opacity: 0;
+    transform: scale(1.1);
+}
