@@ -4,7 +4,7 @@
     <!-- page -->
     <main class="max-w-7xl mx-auto min-h-screen   text-white" x-data="layout">
         <!-- header page -->
-        <header class="flex w-full items-center justify-between  p-4 pt-8 pb-14">
+        <header class="flex w-full items-center justify-between  p-4 pt-8 pb-4 sm:pb-14">
             <!-- logo -->
             <div class="logo flex items-center space-x-2 cursor-pointer">
                 <img :src="'/images/logo.svg'" /><Link class="hidden sm:block ml-5 text-3xl sm:text-4xl" href="/">OrionPay</Link>
@@ -74,7 +74,7 @@
                                 <h2 class="text-indigo-100 tracking-wide text-3xl font-bold">Віддаєте</h2>
                             </div>
 
-                            <div class="px-1 sm:px-4 py-5 text-blue-600">
+                            <div class="px-1 sm:px-4 py-2 sm:py-5 text-blue-600">
                                 <div class="currency-select justify-center w-90 px-0 md:px-3 py-3 rounded-md text-blue-600 cursor-pointer">
                                     <v-select :options="curFrom"
                                               :clearable="false"
@@ -88,7 +88,7 @@
                                 </div>
 
                             </div>
-                            <div class="py-5 flex-auto amountInput relative">
+                            <div class="py-3 sm:py-5 flex-auto amountInput relative">
                                 <input v-model="v$.formOrder.invoiceAmount.$model" type="text"
                                        class="bg-transparent cursor-text without-spin-btn mt-0 block w-full focus:border-indigo-300 focus:outline-none text-gray-200 border-0 border-b-2 border-gray-200 cursor-pointer focus:ring-0"/>
                                 <div class="input-errors" :key="itKey">
@@ -129,7 +129,7 @@
                                     />
                                 </div>
                             </div>
-                            <div class="py-5 flex-auto amountInput relative">
+                            <div class="py-3 sm:py-5 flex-auto amountInput relative">
                                 <input :key="itKey" v-model="formOrder.withdrawAmount" type="text"
                                        class="bg-transparent cursor-text without-spin-btn mt-0 block w-full focus:border-indigo-300 focus:outline-none text-gray-200 border-0 border-b-2 border-gray-200 cursor-pointer focus:ring-0"/>
                                 <div class="currencyName block text-gray-200">{{ currency_2.name }}</div>
