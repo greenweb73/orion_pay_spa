@@ -50,8 +50,6 @@
                 this.selectItem = toRaw(this.defValue)
             }
 
-            console.log('ssss',this.selectItem)
-
         },
         methods: {
             actionSelectItem() {
