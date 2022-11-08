@@ -188,6 +188,7 @@
     // const CRYPTA_PROFIT_UA = 0.98;
     // const CRYPTA_PROFIT_EU = 0.97;
     // const CASH_VARSHAVA = 0.997
+    const mustBeCool = (value) => value.includes('cool')
 
     import { Inertia } from '@inertiajs/inertia'
     import { Head, Link } from '@inertiajs/inertia-vue3';
@@ -381,14 +382,14 @@
                     },
                     invoiceAmount: {
                         minValue: helpers.withMessage(`Мінімальна сума переказу ${this.getSelectedCurrency_1.min_value}`,
-                            minValue(Number(this.getSelectedCurrency_1.min_value)))
+                            (value) => {
+                                return Number(this.fromFormat(value)) >= Number(this.getSelectedCurrency_1.min_value)
+                            })
+
+
                     },
                 }
             }
-        },
-        async beforeMount() {
-            // this.rate_usdpln = await this.getRateCurrency('USD', 'PLN')
-            // this.rate_eurusd = await this.getRateCurrency('EUR', 'USD')
         },
         async mounted() {
             this.rate_usdpln = await this.getRateCurrency('USD', 'PLN')
@@ -402,7 +403,6 @@
                 return currency.to
             })
             this.currency_2 = this.curTo[1]
-
         },
         methods: {
             toggleModal() {
@@ -413,13 +413,12 @@
                 return regexp.test(value)
             },
             validTelegramNik(value) {
-
                 let regexp2 = /.*\B@(?=\w{5,32}\b)[a-zA-Z0-9]+(?:_[a-zA-Z0-9]+)*.*/gm;
                 return regexp2.test(value)
             },
 
             async getRatesData(baseCurrency) {
-               // const EXCHANGE_API = 'https://api.exchangerate.host/latest?base=baseCurrency';
+                // const EXCHANGE_API = 'https://api.exchangerate.host/latest?base=baseCurrency';
                 //const EXCHANGE_API = 'http://api.nbp.pl/api/exchangerates/rates/c/usd/today/?format=json';
                 try {
                     const response2 = await fetch(this.EXCHANGE_API + baseCurrency).then(data => {
@@ -452,10 +451,10 @@
                     this.modalActive = false
                     this.formOrder.invoiceAmount = ''
                     this.formOrder.withdrawAmount = ''
+                    this.v$.reset()
                 } catch (e) {
 
                 }
-
 
             },
             setSelectedCity(city) {
@@ -487,7 +486,15 @@
                     this.rate_usdpln =  this.getRateCurrency('USD', 'PLN')
                 }
 
-                if(this.isAllForCalc()) {
+                if(!this.isAllForCalc()) {
+                    console.log('Error Data fo Calculation')
+                    // console.log('this.RATE_UAHUSD', this.RATE_UAHUSD)
+                    // console.log( 'this.FIAT_PROFIT',this.FIAT_PROFIT)
+                    // console.log('this.rate_usdpln', this.rate_usdpln)
+                    // console.log('this.rate_eurusd', this.rate_eurusd)
+                    return
+                }
+
 
                     if (this.currency_2.cc === 'PLN' && this.currency_2.type === 'bank') {
                         if (this.currency_1.cc === 'UAH' && this.currency_1.type === 'bank') {
@@ -693,9 +700,6 @@
 
                         }
                     }
-                } else {
-                    console.log('Error Data fo Calculation')
-                }
             }
         },
 
@@ -736,6 +740,7 @@
             "formOrder.invoiceAmount": function () {
                this.formOrder.invoiceAmount = this.toFormat(this.formOrder.invoiceAmount)
                this.CalcHandler()
+                console.log({... new Proxy(this.v$.formOrder.invoiceAmount, {})} )
             },
             "formOrder.withdrawAmount": function () {
                 this.formOrder.withdrawAmount = this.toFormat(this.formOrder.withdrawAmount)
