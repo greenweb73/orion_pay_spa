@@ -1,5 +1,9 @@
 <template>
-    <Head title="Переказ коштів " />
+    <Head>
+        <title>Переказ коштів з України</title>
+        <meta head-key="description" name="description" content="This is the default description" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    </Head>
 
     <!-- page -->
     <main class="max-w-7xl mx-auto min-h-screen   text-white" x-data="layout">
