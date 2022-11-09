@@ -208,11 +208,6 @@
 </template>
 
 <script>
-    // const EXCHANGE_API = 'https://api.exchangerate.host/latest?base=';
-    // const FIAT_PROFIT = 0.96;
-    // const CRYPTA_PROFIT_UA = 0.98;
-    // const CRYPTA_PROFIT_EU = 0.97;
-    // const CASH_VARSHAVA = 0.997
 
     import { Inertia } from '@inertiajs/inertia'
     import { Head, Link } from '@inertiajs/inertia-vue3';
@@ -225,7 +220,7 @@
     import Spinner from '@/Components/Spinner.vue'
     import { useVuelidate } from '@vuelidate/core'
 
-    import { minValue , helpers} from '@vuelidate/validators'
+    import { helpers} from '@vuelidate/validators'
 
     import 'vue-select/dist/vue-select.css';
 
@@ -413,7 +408,6 @@
                                 return Number(this.fromFormat(value)) >= Number(this.getSelectedCurrency_1.min_value)
                             })
 
-
                     },
                 }
             }
@@ -454,32 +448,29 @@
                     const response = await fetch('api/rates/all').then(data => {
                         return data;
                     })
-                    return response.json()
+                    return await response.json()
 
                 } catch (e) {
                     console.log('Ошибка получения данных из GSheets')
                 }
             },
-            async getRatesData(baseCurrency = '') {
-                // const EXCHANGE_API = 'https://api.exchangerate.host/latest?base=baseCurrency';
-                //const EXCHANGE_API = 'http://api.nbp.pl/api/exchangerates/rates/c/usd/today/?format=json';
 
+            async getRateCurrency(base_currency, rate_currency ) {
+                const Apikey = '7aecaa111c052bc16c93d12daafd3087f1583c7d53d0f50eb6abbf1020b93a66'
+                const config = {
+                    headers: {
+                        authorization: Apikey
+                    },
+                }
                 try {
-
-                    const response2 = await fetch(this.EXCHANGE_API + baseCurrency).then(data => {
+                    const response = await fetch(`https://min-api.cryptocompare.com/data/price?fsym=${base_currency}&tsyms=${rate_currency}`, config).then(data => {
                         return data;
                     })
-
-                    return await response2.json();
+                    const resultRate = await response.json();
+                    return await resultRate[rate_currency]
                 } catch (e) {
                     console.log('Ошибка в EXCHANGE_API')
                 }
-            },
-            async getRateCurrency(base_currency, rate_currency ) {
-
-                const ratesData = await this.getRatesData(base_currency)
-
-                return ratesData.rates[rate_currency]
             },
             async submitHandler() {
 
@@ -641,7 +632,7 @@
 
                             if (this.formOrder.city) {
                                 //this.formOrder.withdrawAmount = Math.round((this.formOrder.invoiceAmount * this.formOrder.city.coeff ) / this.RATE_UAHUSD * this.FIAT_PROFIT)
-                                this.formOrder.withdrawAmount = Math.round((this.fromFormat(this.formOrder.invoiceAmount)  * 0.998) / 40.6 * this.FIAT_PROFIT / this.rate_eurusd)
+                                this.formOrder.withdrawAmount = Math.round((this.fromFormat(this.formOrder.invoiceAmount)  * 0.998) / this.RATE_UAHUSD * this.FIAT_PROFIT / this.rate_eurusd)
                                 this.itKey++
                             } else {
                                 alert('Оберіть місто')
@@ -649,7 +640,7 @@
 
                         } else if (this.currency_1.cc === 'USD' && this.currency_1.type === 'cash') {
                             if (this.formOrder.city) {
-                                this.formOrder.withdrawAmount = Math.round(((this.fromFormat(this.formOrder.invoiceAmount)  * this.formOrder.city.coeff) * this.rate_eurusd) * this.FIAT_PROFIT)
+                                this.formOrder.withdrawAmount = Math.round(((this.fromFormat(this.formOrder.invoiceAmount)  * this.formOrder.city.coeff) / this.rate_eurusd) * this.FIAT_PROFIT)
                                 this.itKey++
                             } else {
                                 alert('Оберіть місто')
@@ -666,7 +657,7 @@
                         } else if (this.currency_1.cc === 'USDT' && this.currency_1.type === 'crypto') {
 
                             if (this.formOrder.city) {
-                                this.formOrder.withdrawAmount = Math.round((this.fromFormat(this.formOrder.invoiceAmount)  * this.CRYPTA_PROFIT_EU) * this.rate_eurusd)
+                                this.formOrder.withdrawAmount = Math.round((this.fromFormat(this.formOrder.invoiceAmount)  * this.CRYPTA_PROFIT_EU) / this.rate_eurusd)
                                 this.itKey++
                             } else {
                                 alert('Оберіть місто')
