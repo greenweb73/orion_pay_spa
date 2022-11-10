@@ -29,7 +29,7 @@ Route::get('/faqs', [\App\Http\Controllers\FaqController::class, 'index'])->name
 Route::post('/orders', [\App\Http\Controllers\OrderController::class, 'store'])->name('order.store');
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    return Inertia::render('Admin/Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 require __DIR__.'/auth.php';

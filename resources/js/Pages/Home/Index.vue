@@ -201,9 +201,17 @@
                 </div>
             </div>
         </my-modal>
+        <div v-if="canLogin" class=" fixed bottom-0 right-0 px-6 py-4 sm:block">
+
+            <Link v-if="$page.props.auth.user" :href="route('dashboard')" class="text-sm text-white dark:text-gray-500 underline">Dashboard</Link>
+
+            <template v-else>
+                <Link :href="route('login')" class="text-sm text-white dark:text-gray-500 underline">Log in</Link>
+
+                <Link v-if="canRegister" :href="route('register')" class="ml-4 text-sm text-white dark:text-gray-500 underline">Register</Link>
+            </template>
+        </div>
     </main>
-
-
 
 </template>
 
@@ -238,6 +246,10 @@
             InputNumber,
             Spinner
         },
+        props: [
+            'canLogin',
+            'canRegister'
+        ],
         data() {
             return {
                 EXCHANGE_API: 'https://api.exchangerate.host/latest?base=',
