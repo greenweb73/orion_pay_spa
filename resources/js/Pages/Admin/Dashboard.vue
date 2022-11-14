@@ -7,11 +7,7 @@ import { Head } from '@inertiajs/inertia-vue3';
     <Head title="Admin Dashboard" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Dashboard777
-            </h2>
-        </template>
+        <template #header> </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -23,4 +19,5 @@ import { Head } from '@inertiajs/inertia-vue3';
             </div>
         </div>
     </AuthenticatedLayout>
+    {{$page.props.auth}}
 </template>

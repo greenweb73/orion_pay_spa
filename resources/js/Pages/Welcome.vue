@@ -193,10 +193,10 @@
     import { Inertia } from '@inertiajs/inertia'
     import { Head, Link } from '@inertiajs/inertia-vue3';
     import MainLayout from "@/Layouts/MainLayout.vue";
-    import MySelect from "@/Components/MySelect.vue";
-    import TextInput from "@/Components/TextInput.vue";
+    import MySelect from "@/Components/UI/MySelect.vue";
+    import TextInput from "@/Components/UI/TextInput.vue";
     import vSelect from 'vue-select'
-    import MyModal from "@/Components/MyModal.vue";
+    import MyModal from "@/Components/UI/MyModal.vue";
     import InputNumber from 'primevue/inputnumber';
     import { useVuelidate } from '@vuelidate/core'
 
