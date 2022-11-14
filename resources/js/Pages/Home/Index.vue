@@ -201,9 +201,17 @@
                 </div>
             </div>
         </my-modal>
+        <div v-if="canLogin" class=" fixed bottom-0 right-0 px-6 py-4 sm:block">
+
+            <Link v-if="$page.props.auth.user" :href="route('dashboard')" class="text-sm text-white dark:text-gray-500 underline">Dashboard</Link>
+
+            <template v-else>
+                <Link :href="route('login')" class="text-sm text-white dark:text-gray-500 underline">Log in</Link>
+
+                <Link v-if="canRegister" :href="route('register')" class="ml-4 text-sm text-white dark:text-gray-500 underline">Register</Link>
+            </template>
+        </div>
     </main>
-
-
 
 </template>
 
@@ -212,12 +220,12 @@
     import { Inertia } from '@inertiajs/inertia'
     import { Head, Link } from '@inertiajs/inertia-vue3';
     import MainLayout from "@/Layouts/MainLayout.vue";
-    import MySelect from "@/Components/MySelect.vue";
-    import TextInput from "@/Components/TextInput.vue";
+    import MySelect from "@/Components/UI/MySelect.vue";
+    import TextInput from "@/Components/UI/TextInput.vue";
     import vSelect from 'vue-select'
-    import MyModal from "@/Components/MyModal.vue";
+    import MyModal from "@/Components/UI/MyModal.vue";
     import InputNumber from 'primevue/inputnumber';
-    import Spinner from '@/Components/Spinner.vue'
+    import Spinner from '@/Components/UI/Spinner.vue'
     import { useVuelidate } from '@vuelidate/core'
 
     import { helpers} from '@vuelidate/validators'
@@ -238,6 +246,11 @@
             InputNumber,
             Spinner
         },
+        props: [
+            'canLogin',
+            'canRegister',
+            'currencies'
+        ],
         data() {
             return {
                 EXCHANGE_API: 'https://api.exchangerate.host/latest?base=',
@@ -297,7 +310,7 @@
                         coeff: 0.998
                     },
                 ],
-                currencies: [
+                currencies_old: [
                     {
                         id: 1,
                         name: 'UAH (готівка)',
