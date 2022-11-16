@@ -98,7 +98,7 @@
                                        class="bg-transparent cursor-text without-spin-btn mt-0 block w-full focus:border-indigo-300 focus:outline-none text-gray-200 border-0 border-b-2 border-gray-200 cursor-pointer focus:ring-0"/>
                                 <div class="input-errors" :key="itKey">
                                     <div v-if="v$.formOrder.invoiceAmount.$error" class="pt-2 text-sm warning-msg tracking-wide">
-                                        {{ v$.formOrder.invoiceAmount.minValue.$message }} {{ getSelectedCurrency_1.name }}
+                                        {{ v$.formOrder.invoiceAmount.minValue.$message }} {{ getSelectedCurrency_1.min_value }} {{ getSelectedCurrency_1.name }}
                                     </div>
                                 </div>
                                 <div class="currencyName block text-gray-200">{{ currency_1.name }}</div>
@@ -249,7 +249,8 @@
         props: [
             'canLogin',
             'canRegister',
-            'currencies'
+            'currencies',
+            'cities'
         ],
         data() {
             return {
@@ -278,7 +279,7 @@
                     invoiceAmount: '',
                     withdrawAmount: '',
                 },
-                cities: [
+                cities_old: [
                     {
                         id: 1,
                         name: 'Вінниця',
@@ -416,9 +417,9 @@
                         telegramValid: helpers.withMessage('Не коректний телеграм нікнейм', this.validTelegramNik)
                     },
                     invoiceAmount: {
-                        minValue: helpers.withMessage(`Мінімальна сума переказу ${this.getSelectedCurrency_1.min_value}`,
+                        minValue: helpers.withMessage(`Мінімальна сума переказу `,
                             (value) => {
-                                return Number(this.fromFormat(value)) >= Number(this.getSelectedCurrency_1.min_value)
+                                return Number(this.fromFormat(value)) >= Number(this.currency_1.min_value)
                             })
 
                     },
@@ -769,6 +770,10 @@
             getSelectedCurrency_2() {
                 return {... new Proxy(this.currency_2, {})}
             },
+            getMinValueC_1() {
+                return new Proxy(this.currency_1, {}).min_value
+            }
+
 
         },
         watch: {

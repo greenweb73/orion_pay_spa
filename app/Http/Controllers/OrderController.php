@@ -11,6 +11,8 @@ class OrderController extends Controller
     {
         $data = $request->validated();
 
+
+
         return inertia('Page/Welcome', compact('data'));
     }
 }

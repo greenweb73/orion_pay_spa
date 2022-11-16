@@ -13,7 +13,7 @@
                     </Link>
                     <div class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <table class="items-center w-full bg-transparent border-collapse">
-                            <thead class="text-xs text-left text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <thead class="text-xs text-left text-gray-700 uppercase bg-indigo-100 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
                                     <th scope="col" class="py-3 px-6">ID</th>
                                     <th scope="col" class="py-3 px-6">Код валюти</th>

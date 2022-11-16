@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\CurrencyController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -38,6 +39,7 @@ require __DIR__.'/auth.php';
 
 Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
     Route::get('admin/currencies', [CurrencyController::class, 'index'])->name('currency.index');
     Route::get('admin/currencies/create', [CurrencyController::class, 'create'])->name('currency.create');
     Route::post('admin/currencies', [CurrencyController::class, 'store'])->name('currency.store');
@@ -45,5 +47,10 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::patch('admin/currencies/{currency}', [CurrencyController::class, 'update'])->name('currency.update');
     Route::delete('admin/currencies/{currency}', [CurrencyController::class, 'destroy'])->name('currency.destroy');
 
-
+    Route::get('admin/cities', [CityController::class, 'index'])->name('city.index');
+    Route::get('admin/cities/create', [CityController::class, 'create'])->name('city.create');
+    Route::post('admin/cities', [CityController::class, 'store'])->name('city.store');
+    Route::get('admin/cities/{city}/edit', [CityController::class, 'edit'])->name('city.edit');
+    Route::patch('admin/cities/{city}', [CityController::class, 'update'])->name('city.update');
+    Route::delete('admin/cities/{city}', [CityController::class, 'destroy'])->name('city.destroy');
 });
