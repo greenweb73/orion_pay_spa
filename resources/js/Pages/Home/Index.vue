@@ -493,8 +493,8 @@
                         city: this.formOrder.city,
                         currency_from: this.currency_1,
                         currency_to: this.currency_2,
-                        invoiceAmount: this.formOrder.invoiceAmount,
-                        withdrawAmount: this.formOrder.withdrawAmount,
+                        invoiceAmount: Number(this.formOrder.invoiceAmount),
+                        withdrawAmount: Number(this.formOrder.withdrawAmount),
                         phone: this.formOrder.phone,
                         telegram: this.formOrder.telegram
                     })
