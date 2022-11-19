@@ -24,7 +24,7 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'city' => 'required|array',
+            'city' => 'nullable|array',
             'currency_from' => 'required|array',
             'currency_to' => 'required|array',
             'invoiceAmount' => 'nullable|integer',
