@@ -19,7 +19,7 @@ class OrderController extends Controller
         $data = $request->validated();
 
         try {
-            Mail::to(env('MAIL_TO_NOTIFY'))->send(new OrderMail($data));
+            //Mail::to(env('MAIL_TO_NOTIFY'))->send(new OrderMail($data));
 
             $this->sendNotify($data);
 
