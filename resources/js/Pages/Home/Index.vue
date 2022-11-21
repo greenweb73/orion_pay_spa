@@ -330,8 +330,7 @@
             this.rate_eurusd = await this.getRateCurrency('EUR', 'USD')
 
             let res = await this.getRatesFromGoogleSheet('UAH_USD')
-            //this.RATE_UAHUSD = res['UAH_USD']
-            this.RATE_UAHUSD = 39.9
+            this.RATE_UAHUSD = res['UAH_USD']
         },
         mounted() {
             this.curFrom = this.currencies.filter(currency => {
