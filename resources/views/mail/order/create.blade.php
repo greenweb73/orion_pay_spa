@@ -1,14 +1,6 @@
 <x-mail::message>
-# Introduction
+# Нова заявка
 
-
-
-The body of your message.
-
-<x-mail::button :url="''">
-Button Text
-</x-mail::button>
-
-Thanks,<br>
+Дякуєм,<br>
 {{ config('app.name') }}
 </x-mail::message>

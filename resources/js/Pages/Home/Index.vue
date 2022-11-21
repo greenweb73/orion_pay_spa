@@ -160,46 +160,64 @@
                                 <div class="currencyName block text-gray-200">{{ currency_2.name }}</div>
                             </div>
                             <div class="bottonBlock flex flex-auto justify-center pt-4 pb-6">
-                                <button @click = "toggleModal" class="btn px-10 w-80 py-4 uppercase text-white shadow  hover:bg-indigo-700 bg-indigo-800 tracking-wide rounded-lg">Подати заявку</button>
+                                <button @click = "startOrder" class="btn px-10 w-80 py-4 uppercase text-white shadow  hover:bg-indigo-700 bg-indigo-800 tracking-wide rounded-lg">Подати заявку</button>
                             </div>
                         </div>
                     </div>
                 </dl>
             </div>
         </div>
-        <my-modal :modalActive="modalActive" @modalClose="toggleModal">
-            <h2 class="max-w-[600px] pb-6 pt-6 text-center">Залиште ваш номер телефону або телеграм і ми зв'яжемось з вами для надання детальної інформації
-            </h2>
-            <div class="w-full max-w-sm mx-auto">
-                <div class="relative z-0 mb-6 w-full group">
-                    <input v-model="v$.formOrder.phone.$model" type="text" name="floating_email" id="floating_phone"
-                           :class="[v$.formOrder.phone.$error ? 'border-red-600' : ''   ]"
-                           class="dark:focus:border-blue-500 block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600  focus:outline-none focus:ring-0 peer" placeholder=" " required />
-                    <label for="floating_phone" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Телефон +380 XX XXX XX XX</label>
-                    <div v-if="v$.formOrder.phone.$error" class="text-red-600 input-errors pt-2 text-sm warning-msg">
+
+        <my-modal :loading="stepOrderLoading" :modalActive="modalActive" @modalClose="toggleModal">
+
+            <div v-if="stepOrderSend">
+                <h2 class="max-w-[600px] pb-6 pt-6 text-center">Залиште ваш номер телефону або телеграм і ми зв'яжемось з вами для надання детальної інформації</h2>
+                <div class="w-full max-w-sm mx-auto">
+                    <div class="relative z-0 mb-6 w-full group">
+                        <input v-model="v$.formOrder.phone.$model" type="text" name="floating_email" id="floating_phone"
+                               :class="[v$.formOrder.phone.$error ? 'border-red-600' : ''   ]"
+                               class="dark:focus:border-blue-500 block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600  focus:outline-none focus:ring-0 peer" placeholder=" " required />
+                        <label for="floating_phone" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Телефон +380 XX XXX XX XX</label>
+                        <div v-if="v$.formOrder.phone.$error" class="text-red-600 input-errors pt-2 text-sm warning-msg">
                             {{ v$.formOrder.phone.phoneValid.$message }}
+                        </div>
                     </div>
-                </div>
-                <div class="relative z-0 mb-6 w-full group">
-                    <input v-model="v$.formOrder.telegram.$model" type="text"  id="floating_telegram"
-                           :class="[v$.formOrder.telegram.$error ? 'border-rose-600' : ''   ]"
-                           class="dark:focus:border-blue-500 block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600  focus:outline-none focus:ring-0 peer" placeholder=" " required />
-                    <label for="floating_telegram" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Телеграм ( @YourTelegramNik )</label>
-                    <div v-if="v$.formOrder.telegram.$error" class="text-red-600 input-errors pt-2 text-sm warning-msg">
-                        {{ v$.formOrder.telegram.telegramValid.$message }}
+                    <div class="relative z-0 mb-6 w-full group">
+                        <input v-model="v$.formOrder.telegram.$model" type="text"  id="floating_telegram"
+                               :class="[v$.formOrder.telegram.$error ? 'border-rose-600' : ''   ]"
+                               class="dark:focus:border-blue-500 block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600  focus:outline-none focus:ring-0 peer" placeholder=" " required />
+                        <label for="floating_telegram" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Телеграм ( @YourTelegramNik )</label>
+                        <div v-if="v$.formOrder.telegram.$error" class="text-red-600 input-errors pt-2 text-sm warning-msg">
+                            {{ v$.formOrder.telegram.telegramValid.$message }}
+                        </div>
                     </div>
-                </div>
 
 
-                <div class="md:flex justify-center md:items-center pb-6 mt-8">
+                    <div class="md:flex justify-center md:items-center pb-6 mt-8">
 
-                    <div class="md:w-1/2 text-center">
-                        <button @click.prevent="submitHandler" class="shadow bg-indigo-700 hover:bg-indigo-600 focus:shadow-outline focus:outline-none text-white font-bold py-3 px-10 rounded" type="button">
-                            Відправити
-                        </button>
+                        <div class="md:w-1/2 text-center">
+                            <button @click.prevent="submitHandler" class="shadow bg-indigo-700 hover:bg-indigo-600 focus:shadow-outline focus:outline-none text-white font-bold py-3 px-10 rounded" type="button">
+                                Відправити
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <div v-else-if="stepOrderSendSuccess">
+                <div class="p-4 flex flex-col items-center ">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="text-emerald-500 w-10 h-10">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+
+                    </div>
+                    <h2 class="max-w-[600px] pb-2 pt-3 text-center text-2xl text-emerald-500">Заявка успішно відправлена !</h2>
+                    <p class="max-w-[600px] pb-6 pt-2 text-center text-xl text-black">Найближчим часом наш менеджер зв'яжеться з вами...</p>
+                </div>
+
+            </div>
+
         </my-modal>
         <div v-if="canLogin" class=" fixed bottom-0 right-0 px-6 py-4 sm:block">
 
@@ -250,7 +268,8 @@
             'canLogin',
             'canRegister',
             'currencies',
-            'cities'
+            'cities',
+            'status'
         ],
         data() {
             return {
@@ -279,130 +298,9 @@
                     invoiceAmount: '',
                     withdrawAmount: '',
                 },
-                cities_old: [
-                    {
-                        id: 1,
-                        name: 'Вінниця',
-                        coeff: 0.995
-                    },
-                    {
-                        id: 2,
-                        name: 'Дніпро',
-                        coeff: 0.995
-                    },
-                    {
-                        id: 3,
-                        name: 'Житомир',
-                        coeff: 0.995
-                    },
-                    {
-                        id: 4,
-                        name: 'Запоріжжя',
-                        coeff: 0.995
-                    },
-                    {
-                        id: 5,
-                        name: 'Івано-Франківськ',
-                        coeff: 0.995
-                    },
-                    {
-                        id: 6,
-                        name: 'Київ',
-                        coeff: 0.998
-                    },
-                ],
-                currencies_old: [
-                    {
-                        id: 1,
-                        name: 'UAH (готівка)',
-                        cc: 'UAH',
-                        type: 'cash',
-                        from: true,
-                        to: false,
-                        min_value: 40000
-                    },
-                    {
-                        id: 2,
-                        name: 'UAH (безготівкова)',
-                        cc: 'UAH',
-                        type: 'bank',
-                        from: true,
-                        to: false,
-                        min_value: 40000
-                    },
-                    {
-                        id: 3,
-                        name: 'USD (готівка)',
-                        cc: 'USD',
-                        type: 'cash',
-                        from: true,
-                        to: false,
-                        min_value: 1000
-                    },
-                    {
-                        id: 4,
-                        name: 'EUR (готівка)',
-                        cc: 'EUR',
-                        type: 'cash',
-                        from: true,
-                        to: false,
-                        min_value: 1000
-                    },
-                    {
-                        id: 5,
-                        name: 'USDT (TRC-20)',
-                        cc: 'USDT',
-                        type: 'crypto',
-                        from: true,
-                        to: true,
-                        min_value: 0
-                    },
-                    {
-                        id: 6,
-                        name: 'PLN (готівка, Варшава)',
-                        cc: 'PLN',
-                        type: 'cash',
-                        from: false,
-                        to: false,
-                        min_value: 0
-                    },
-                    {
-                        id: 7,
-                        name: 'PLN (безготівка на IBAN)',
-                        cc: 'PLN',
-                        type: 'bank',
-                        from: false,
-                        to: true,
-                        min_value: 0
-                    },
-                    {
-                        id: 8,
-                        name: 'USD (на Revolut, Wise...)',
-                        cc: 'USD',
-                        type: 'payservice',
-                        from: false,
-                        to: true,
-                        min_value: 0
-                    },
-                    {
-                        id: 9,
-                        name: 'EUR (на Revolut, Wise...)',
-                        cc: 'EUR',
-                        type: 'payservice',
-                        from: false,
-                        to: true,
-                        min_value: 0
-                    },
-                    {
-                        id: 10,
-                        name: 'EUR (безготівка на IBAN)',
-                        cc: 'EUR',
-                        type: 'bank',
-                        from: false,
-                        to: true,
-                        min_value: 0
-                    }
-                ],
+                stepOrderSend: false,
+                stepOrderLoading: false,
+                stepOrderSendSuccess: false,
                 itKey: 1,
                 selCurrKey: 1
             }
@@ -432,7 +330,8 @@
             this.rate_eurusd = await this.getRateCurrency('EUR', 'USD')
 
             let res = await this.getRatesFromGoogleSheet('UAH_USD')
-            this.RATE_UAHUSD = res['UAH_USD']
+            //this.RATE_UAHUSD = res['UAH_USD']
+            this.RATE_UAHUSD = 39.9
         },
         mounted() {
             this.curFrom = this.currencies.filter(currency => {
@@ -446,6 +345,10 @@
             this.currency_2 = this.curTo[1]
         },
         methods: {
+            startOrder() {
+              this.stepOrderSend = !this.stepOrderSend
+              this.toggleModal()
+            },
             toggleModal() {
                this.modalActive = !this.modalActive
             },
@@ -487,25 +390,42 @@
                 }
             },
             async submitHandler() {
-
                 try {
-                    await Inertia.post('/orders', {
-                        city: this.formOrder.city,
-                        currency_from: this.currency_1,
-                        currency_to: this.currency_2,
-                        invoiceAmount: Number(this.formOrder.invoiceAmount),
-                        withdrawAmount: Number(this.formOrder.withdrawAmount),
-                        phone: this.formOrder.phone,
-                        telegram: this.formOrder.telegram
+                    console.log(typeof this.formOrder.invoiceAmount)
+                    this.stepOrderLoading = !this.stepOrderLoading
+                    this.stepOrderSend = !this.stepOrderSend
+                    await axios.post(route('order.store'), {
+                            city: this.formOrder.city,
+                            currency_from: this.currency_1,
+                            currency_to: this.currency_2,
+                            invoiceAmount: this.fromFormat(this.formOrder.invoiceAmount),
+                            withdrawAmount: this.fromFormat(this.formOrder.withdrawAmount),
+                            phone: this.formOrder.phone,
+                            telegram: this.formOrder.telegram
+                    }).then(res => {
+                        if (res.statusText === 'OK') {
+                            this.stepOrderLoading = !this.stepOrderLoading
+                            this.stepOrderSendSuccess = !this.stepOrderSendSuccess
+                        }
+
                     })
-                    this.modalActive = false
-                    this.formOrder.invoiceAmount = ''
-                    this.formOrder.withdrawAmount = ''
-                    this.v$.reset()
+                    setTimeout(() => {
+                       this.resetState()
+                    }, 5000)
+
+
                 } catch (e) {
 
                 }
 
+            },
+            resetState() {
+                this.modalActive = false
+                this.formOrder.invoiceAmount = ''
+                this.formOrder.withdrawAmount = ''
+                this.stepOrderSend = false
+                this.stepOrderSendSuccess = false
+                this.v$.$reset()
             },
             setSelectedCity(city) {
                this.formOrder.city = city
