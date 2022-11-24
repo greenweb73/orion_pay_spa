@@ -92,3 +92,7 @@ select::-ms-expand {
     opacity: 0;
     transform: scale(1.1);
 }
+
+.active-menu {
+    background: rgba(114, 109, 159, 0.5)
+}

@@ -106,10 +106,36 @@
 
           </li>
 
-
-
-
         </ul>
+
+        <!-- Divider -->
+        <hr class="my-4 md:min-w-full" />
+        <!-- Heading -->
+        <h6
+            class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline"
+        >
+            Сторінки
+        </h6>
+        <ul class="md:flex-col md:min-w-full flex flex-col list-none md:mb-4">
+            <li class="items-center">
+                <a
+                    class="text-blueGray-700 hover:text-blueGray-500 text-xs py-3 font-bold block"
+                    :href="'/profile'"
+                >
+                    <i class="fas fa-user-circle text-blueGray-300 mr-2 text-sm"></i>
+                    Про нас
+                </a>
+            </li>
+            <li class="items-center">
+                <a
+                    class="text-blueGray-700 hover:text-blueGray-500 text-xs py-3 font-bold block"
+                    :href="'/profile'"
+                >
+                    <i class="fas fa-user-circle text-blueGray-300 mr-2 text-sm"></i>
+                    FAQ (Часті запитання)
+                </a>
+            </li>
+          </ul>
 
         <!-- Divider -->
         <hr class="my-4 md:min-w-full" />
