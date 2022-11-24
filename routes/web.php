@@ -27,17 +27,18 @@ use App\Http\Controllers\Admin\DashboardController;
 //    ]);
 //});
 
+
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home.index');
 Route::get('/faqs', [\App\Http\Controllers\FaqController::class, 'index'])->name('faq.index');
 Route::post('/orders', [\App\Http\Controllers\OrderController::class, 'store'])->name('order.store');
 
-//Route::get('/dashboard', function () {
+//Route::get('admin/dashboard', function () {
 //    return Inertia::render('Admin/Dashboard');
 //})->middleware(['auth', 'verified'])->name('dashboard');
 
-require __DIR__.'/auth.php';
 
-Route::group(['middleware' => ['auth', 'verified']], function () {
+
+Route::group(['middleware' => ['auth', 'verified', 'role:admin']], function () {
     Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('admin/currencies', [CurrencyController::class, 'index'])->name('currency.index');
@@ -54,3 +55,5 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::patch('admin/cities/{city}', [CityController::class, 'update'])->name('city.update');
     Route::delete('admin/cities/{city}', [CityController::class, 'destroy'])->name('city.destroy');
 });
+
+require __DIR__.'/auth.php';
