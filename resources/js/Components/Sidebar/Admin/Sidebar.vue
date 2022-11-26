@@ -97,7 +97,7 @@
 
             <li class="items-center">
               <Link
-                    :href="route('faq.index')"
+                    :href="route('admin.faq.index')"
                     class="p-3 max-w-sm mx-auto bg-white flex items-center space-x-4">
                     <i class="mr-2 text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
