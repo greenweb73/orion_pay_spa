@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Order\StoreRequest;
 use App\Mail\Order\OrderMail;
-use App\Mail\OrderShipped;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Exception;

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <select :class="contentClasses"  v-model="selectItem" @change="actionSelectItem">
+        <select :class="[...contentClasses]"  v-model="selectItem" @change="actionSelectItem">
 
             <option v-if="!Object.keys(defValue).length" :value="{}" selected >
                 {{ placeholder }}
