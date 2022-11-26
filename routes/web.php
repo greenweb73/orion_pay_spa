@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\CurrencyController;
+use App\Http\Controllers\Admin\FaqController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -28,17 +29,22 @@ use App\Http\Controllers\Admin\DashboardController;
 //});
 
 
-Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home.index');
-Route::get('/faqs', [\App\Http\Controllers\FaqController::class, 'index'])->name('faq.index');
+Route::get('/', [\App\Http\Controllers\SiteController::class, 'index'])->name('home');
+Route::get('/faqs', [\App\Http\Controllers\SiteController::class, 'faqs'])->name('faqs');
 Route::post('/orders', [\App\Http\Controllers\OrderController::class, 'store'])->name('order.store');
 
 //Route::get('admin/dashboard', function () {
 //    return Inertia::render('Admin/Dashboard');
 //})->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/clear', function(){
+    \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+    $notify[]=['success', 'Cache cleared successfully'];
+    return redirect()->back()->withNotify($notify);
+})->name('clear-cache');
 
 
-Route::group(['middleware' => ['auth', 'verified', 'role:admin']], function () {
+Route::group(['middleware' => ['role:admin']], function () {
     Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('admin/currencies', [CurrencyController::class, 'index'])->name('currency.index');
@@ -54,6 +60,13 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin']], function () {
     Route::get('admin/cities/{city}/edit', [CityController::class, 'edit'])->name('city.edit');
     Route::patch('admin/cities/{city}', [CityController::class, 'update'])->name('city.update');
     Route::delete('admin/cities/{city}', [CityController::class, 'destroy'])->name('city.destroy');
+
+    Route::get('admin/faqs', [FaqController::class, 'index'])->name('admin.faq.index');
+    Route::get('admin/faqs/create', [FaqController::class, 'create'])->name('admin.faq.create');
+    Route::post('admin/faqs', [FaqController::class, 'store'])->name('admin.faq.store');
+    Route::get('admin/faqs/{faq}/edit', [FaqController::class, 'edit'])->name('admin.faq.edit');
+    Route::patch('admin/faqs/{faq}', [FaqController::class, 'update'])->name('admin.faq.update');
+    Route::delete('admin/faqs/{faq}', [FaqController::class, 'destroy'])->name('admin.faq.destroy');
 });
 
 require __DIR__.'/auth.php';

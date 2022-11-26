@@ -96,3 +96,7 @@ select::-ms-expand {
 .active-menu {
     background: rgba(114, 109, 159, 0.5)
 }
+
+.bg-orion {
+    background-color: rgb(23 33 82 / 80%);
+}

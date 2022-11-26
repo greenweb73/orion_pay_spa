@@ -71,31 +71,21 @@
         <!-- Navigation -->
 
         <ul class="md:flex-col md:min-w-full flex flex-col list-none">
-          <li class="items-center">
-             <Link
-                :href="route('currency.index')"
-
-                class="p-3 max-w-sm mx-auto bg-white flex items-center space-x-4"
-              >
+            <li class="items-center">
+                <Link :href="route('currency.index')"
+                      class="p-3 max-w-sm mx-auto bg-white flex items-center space-x-4">
                   <i class="mr-2 text-sm">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                   </i>
-
-
                   Валюта
               </Link>
+            </li>
 
-          </li>
-
-          <li class="items-center">
-
-              <Link
-                  :href="route('city.index')"
-
-                  class="p-3 max-w-sm mx-auto bg-white flex items-center space-x-4"
-              >
+            <li class="items-center">
+              <Link :href="route('city.index')"
+                  class="p-3 max-w-sm mx-auto bg-white flex items-center space-x-4">
                   <i class="mr-2 text-sm">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
@@ -103,8 +93,21 @@
                   </i>
                   Міста
               </Link>
+            </li>
 
-          </li>
+            <li class="items-center">
+              <Link
+                    :href="route('faq.index')"
+                    class="p-3 max-w-sm mx-auto bg-white flex items-center space-x-4">
+                    <i class="mr-2 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+                        </svg>
+                    </i>
+                    FAQ
+                </Link>
+
+            </li>
 
         </ul>
 
@@ -114,25 +117,17 @@
         <h6
             class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline"
         >
-            Сторінки
+            Управління контентом
         </h6>
         <ul class="md:flex-col md:min-w-full flex flex-col list-none md:mb-4">
+
             <li class="items-center">
                 <a
                     class="text-blueGray-700 hover:text-blueGray-500 text-xs py-3 font-bold block"
                     :href="'/profile'"
                 >
                     <i class="fas fa-user-circle text-blueGray-300 mr-2 text-sm"></i>
-                    Про нас
-                </a>
-            </li>
-            <li class="items-center">
-                <a
-                    class="text-blueGray-700 hover:text-blueGray-500 text-xs py-3 font-bold block"
-                    :href="'/profile'"
-                >
-                    <i class="fas fa-user-circle text-blueGray-300 mr-2 text-sm"></i>
-                    FAQ (Часті запитання)
+                    Сторінки
                 </a>
             </li>
           </ul>
