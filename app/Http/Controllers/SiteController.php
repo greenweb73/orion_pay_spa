@@ -4,13 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\City;
 use App\Models\Currency;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
-use PulkitJalan\Google\Facades\Google;
-use Revolution\Google\Sheets\Facades\Sheets;
+use Illuminate\Support\Facades\Route;
 
-class HomeController extends Controller
+class SiteController extends Controller
 {
     public function index() {
         $cities = City::all();
@@ -20,5 +17,9 @@ class HomeController extends Controller
         //$laravelVersion = Application::VERSION;
         //$phpVersion = PHP_VERSION;
         return inertia('Home/Index', compact('currencies','canLogin', 'canRegister', 'cities') );
+    }
+
+    public function faqs() {
+        return inertia('Faq/Index');
     }
 }
