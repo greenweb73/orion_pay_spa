@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="Додати валюту" />
+    <Head title="Додати Нове Питання - Відповідь" />
 
     <AuthenticatedLayout>
         <template #header>Нове Питання - Відповідь</template>
@@ -33,12 +33,16 @@
                                     >
                                         Відповідь
                                     </label>
-                                    <textarea
+                                    <editor
+                                        :api-key="apiKey"
                                         v-model="form.answer"
-                                        type="text"
-                                        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                        rows="4">
-                                    </textarea>
+                                        :init="{
+                                            plugins: 'advlist autolink code lists link image charmap print preview hr ancor pagebreak media table',
+                                            toolbar_mode: 'floating',
+                                            relative_urls: false,
+                                            height: 300
+                                        }"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -65,13 +69,15 @@
     import { Inertia } from '@inertiajs/inertia'
     import { Head, Link } from '@inertiajs/inertia-vue3';
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+    import Editor from "@tinymce/tinymce-vue";
 
     export default {
         name: "Index",
         components: {
             Head,
             Link,
-            AuthenticatedLayout
+            AuthenticatedLayout,
+            Editor
         },
         data() {
             return {
