@@ -3,7 +3,7 @@
     <Head title="Додати валюту" />
 
     <AuthenticatedLayout>
-        <template #header> Редагувати валюту</template>
+        <template #header> Редагування Питання - Відповіді...</template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -32,12 +32,17 @@
                                     >
                                         Відповідь
                                     </label>
-                                    <textarea
+                                    <editor
+                                        :api-key="apiKey"
                                         v-model="form.answer"
-                                        type="text"
-                                        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                        rows="4">
-                                    </textarea>
+                                        :init="{
+                                            plugins: 'advlist autolink code lists link image charmap print preview hr ancor pagebreak media table',
+                                            toolbar_mode: 'floating',
+                                            relative_urls: false,
+                                            height: 300
+                                        }"
+                                    />
+
                                 </div>
                             </div>
                         </div>
@@ -64,19 +69,22 @@
     import { Inertia } from '@inertiajs/inertia'
     import { Head, Link } from '@inertiajs/inertia-vue3';
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+    import Editor from '@tinymce/tinymce-vue'
 
     export default {
         name: "Edit",
         components: {
             Head,
             Link,
-            AuthenticatedLayout
+            AuthenticatedLayout,
+            Editor
         },
         props: [
             'faq'
         ],
         data() {
             return {
+                apiKeyEditor: 'hyfqdus1dwgnfd0dmjpdjyab4fgfk1x1m0yw9ip7h9es74xc',
                 form: {
                     question: this.faq.question,
                     answer: this.faq.answer,

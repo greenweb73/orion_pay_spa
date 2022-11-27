@@ -60,8 +60,8 @@
             </Sidebar>
             <!-- main content page -->
             <div class="w-full p-4">
-                <div class="bg-orion lg:pt-2 pt-3 w-full  px-2 text-left shadow-md shadow-lg rounded-lg">
-                    <h1>FAQ: Питання-відповіді</h1>
+                <div class="bg-orion h-[570px] lg:py-8 pt-3 w-full px-6 text-left shadow-md shadow-lg rounded-lg">
+                    <h1 class="text-indigo-100 tracking-wide text-3xl font-bold">FAQ: Питання-відповіді</h1>
                 </div>
 
 

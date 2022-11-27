@@ -28,7 +28,7 @@ class FaqController extends Controller
 
         Faq::firstOrCreate($request->validated());
 
-        return redirect()->route('faq.index');
+        return redirect()->route('admin.faq.index');
     }
 
     public function edit(Faq $faq) {
@@ -39,12 +39,12 @@ class FaqController extends Controller
     public function update(Faq $faq, UpdateRequest $request) {
         $faq->update($request->validated());
 
-        return redirect()->route('faq.index');
+        return redirect()->route('admin.faq.index');
     }
 
     public function destroy(Faq $faq) {
         $faq->delete();
 
-        return redirect()->route('faq.index');
+        return redirect()->route('admin.faq.index');
     }
 }
