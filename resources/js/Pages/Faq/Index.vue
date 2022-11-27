@@ -51,18 +51,29 @@
 
                         </div>
 
-
-
-
                     </aside>
                 </template>
 
             </Sidebar>
             <!-- main content page -->
             <div class="w-full p-4">
-                <div class="bg-orion h-[570px] lg:py-8 pt-3 w-full px-6 text-left shadow-md shadow-lg rounded-lg">
+                <div class="bg-orion max-h-[570px] min-h-[520px] lg:py-8 pt-3 w-full px-10 text-left shadow-md shadow-lg rounded-lg overflow-y-auto">
                     <h1 class="text-indigo-100 tracking-wide text-3xl font-bold">FAQ: Питання-відповіді</h1>
+                    <div class="pt-8 text-indigo-100 ">
+                        <MyAccordion v-for="(faq, index) in faqs" class="mb-4">
+                            <template v-slot:title>
+                                <span class="font-semibold text-xl">{{ faq.question }}</span>
+                            </template>
+                            <template v-slot:content >
+                                <div v-html="faq.answer"></div>
+
+                            </template>
+                        </MyAccordion>
+
+
+                    </div>
                 </div>
+
 
 
             </div>
@@ -75,14 +86,19 @@
     import {Link, Head} from '@inertiajs/inertia-vue3'
     import MainLayout from "@/Layouts/MainLayout.vue";
     import Sidebar from "@/Components/Frontend/Sidebar.vue";
+    import MyAccordion from "@/Components/UI/MyAccordion.vue";
     export default {
         name: "Index",
         layout: MainLayout,
         components: {
             Link,
             Head,
-            Sidebar
-        }
+            Sidebar,
+            MyAccordion
+        },
+        props: [
+            'faqs'
+        ]
     }
 </script>
 

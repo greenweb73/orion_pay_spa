@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\City;
 use App\Models\Currency;
+use App\Models\Faq;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,7 @@ class SiteController extends Controller
     }
 
     public function faqs() {
-        return inertia('Faq/Index');
+        $faqs = Faq::all();
+        return inertia('Faq/Index', compact('faqs'));
     }
 }
