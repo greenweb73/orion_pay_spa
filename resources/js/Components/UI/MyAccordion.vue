@@ -3,7 +3,7 @@
         <button
             @click="toggleAccordion()"
             :class="{ 'text-white': isOpen}"
-            class="w-full justify-between flex items-center space-x-3 pt-2 pb-4"
+            class="w-full justify-between flex items-center space-x-3 pt-2 pb-4 text-left"
             :aria-expanded="isOpen"
             :aria-controls="`collapse${_uid}`"
         >

@@ -4,10 +4,19 @@
         <!-- header page -->
         <header class="flex w-full items-center justify-between  p-4 pt-8 pb-14">
             <!-- logo -->
-            <div class="flex items-center space-x-2 cursor-pointer">
-
-                <img :src="'/images/logo.svg'" style="width: 55px; height: auto"/><Link class="ml-5 text-4xl" href="/">OrionPay</Link>
+            <div class="logo flex items-center space-x-2 cursor-pointer">
+                <img :src="'/images/logo.svg'" /><Link class="hidden sm:block ml-5 text-3xl sm:text-4xl" href="/">OrionPay</Link>
             </div>
+
+            <!-- mobile menu button -->
+            <button @click="isOpenMobileMenu = !isOpenMobileMenu" id="hamburger-botton" class="-mr-2 mobile-menu-button p-4 focus:outline-none lg:hidden cursor-pointer">
+
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 stroke-2 hover:stroke-2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
+                </svg>
+
+            </button>
+
 
 
         </header>
@@ -57,12 +66,12 @@
             </Sidebar>
             <!-- main content page -->
             <div class="w-full p-4">
-                <div class="bg-orion max-h-[570px] min-h-[520px] lg:py-8 pt-3 w-full px-10 text-left shadow-md shadow-lg rounded-lg overflow-y-auto">
+                <div class="bg-orion max-h-[570px] min-h-[520px] lg:py-8 pt-3 w-full sm:px-10 px-6 shadow-md shadow-lg rounded-lg overflow-y-auto">
                     <h1 class="text-indigo-100 tracking-wide text-3xl font-bold">FAQ: Питання-відповіді</h1>
-                    <div class="pt-8 text-indigo-100 ">
+                    <div class="pt-8 text-indigo-100 text-left">
                         <MyAccordion v-for="(faq, index) in faqs" class="mb-4">
                             <template v-slot:title>
-                                <span class="font-semibold text-xl">{{ faq.question }}</span>
+                                <span class="max-w-[90%] font-semibold text-xl">{{ faq.question }}</span>
                             </template>
                             <template v-slot:content >
                                 <div v-html="faq.answer"></div>
@@ -98,7 +107,12 @@
         },
         props: [
             'faqs'
-        ]
+        ],
+        data() {
+            return {
+                isOpenMobileMenu: false,
+            }
+        }
     }
 </script>
 
