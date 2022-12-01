@@ -6,14 +6,31 @@
     </Head>
 
     <!-- page -->
-    <main class="max-w-7xl mx-auto text-white" x-data="layout">
+    <main class="max-w-full md:max-w-7xl mx-auto text-white" x-data="layout">
         <!-- header page -->
-        <header class="flex w-full items-center justify-between  p-4 pt-8 pb-4 sm:pb-14">
-            <!-- logo -->
-            <div class="logo flex items-center space-x-2 cursor-pointer">
-                <img :src="'/images/logo.svg'" /><Link class="hidden sm:block ml-5 text-3xl sm:text-4xl" href="/">OrionPay</Link>
+        <header class="relative flex w-full items-center justify-between  p-4 pt-14 lg:pt-8 pb-4 sm:pb-14">
+
+            <div class="logo-info-wrap w-full flex flex-row gap-7 justify-between">
+                <!-- logo -->
+                <div class="logo flex items-center space-x-2 cursor-pointer">
+                    <img :src="'/images/logo.svg'" /><Link class="hidden sm:block ml-5 text-3xl sm:text-4xl" href="/">OrionPay</Link>
+                </div>
+                <!-- info -->
+                <div class="time-works absolute top-0 py-2 left-0 justify-center lg:justify-end w-full bg-indigo-800 lg:bg-transparent lg:relative flex items-center text-red-500">
+                    <div class="message-content text-white flex">
+                        <i class="mr-2 text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </i>
+                        години роботи 10:00 - 19:00, Пн - Пт
+                    </div>
+
+                </div>
+
             </div>
-            <div ref="selectDiv" @click="isOpenSelectCity = !isOpenSelectCity" class="selectDiv relative">
+
+            <div ref="selectDiv" @click="isOpenSelectCity = !isOpenSelectCity" class="selectDiv relative ml-8">
                 <MySelect
                     :contentClasses="['px-3', 'py-2', 'rounded-md', 'text-blue-100', 'cursor-pointer', 'appearance-none', 'round', 'w-[180px]']"
                     :items="cities" @updateSelect="setSelectedCity"
@@ -196,14 +213,17 @@
         <my-modal :loading="stepOrderLoading" :modalActive="modalActive" @modalClose="closeModal">
 
             <div v-if="stepOrderSend">
-                {{showInputTelegram}} {{showInputPhone}}
+
                 <h2 class="max-w-[600px] pb-6 pt-6 text-center">Залиште ваш номер телефону або телеграм і ми зв'яжемось з вами для надання детальної інформації</h2>
                 <div class="w-full max-w-sm mx-auto">
                     <div v-if="showInputPhone"
                          class="relative z-0 mb-6 w-full group">
-                        <input v-model="v$.formOrder.phone.$model" type="text" name="floating_email" id="floating_phone"
-                               :class="[v$.formOrder.phone.$error ? 'border-red-600' : ''   ]"
-                               class="dark:focus:border-blue-500 block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600  focus:outline-none focus:ring-0 peer" placeholder=" " required />
+                        <input
+                            @focus="focusPhone"
+                            @blur="blurPhone"
+                            v-model="v$.formOrder.phone.$model" type="text" name="floating_email" id="floating_phone"
+                            :class="[v$.formOrder.phone.$error ? 'border-red-600' : ''   ]"
+                            class="dark:focus:border-blue-500 block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600  focus:outline-none focus:ring-0 peer" placeholder=" " required />
                         <label for="floating_phone" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Телефон +380 XX XXX XX XX</label>
                         <div v-if="v$.formOrder.phone.$error" class="text-red-600 input-errors pt-2 text-sm warning-msg">
                             {{ v$.formOrder.phone.phoneValid.$message }}
@@ -276,7 +296,7 @@
     import 'vue-select/dist/vue-select.css';
 
     export default {
-
+        inheritAttrs: true,
         name: "Index",
         layout: MainLayout,
         components: {
@@ -295,7 +315,8 @@
             'canRegister',
             'currencies',
             'cities',
-            'status'
+            'status',
+            'errors'
         ],
         data() {
             return {
@@ -329,7 +350,9 @@
                 stepOrderSendSuccess: false,
                 itKey: 1,
                 selCurrKey: 1,
-                resetCityKey: 1
+                resetCityKey: 1,
+                showInputTelegram: true,
+                showInputPhone: true
             }
         },
         validations () {
@@ -357,8 +380,9 @@
             this.rate_usdpln = await this.getRateCurrency('USD', 'PLN')
             this.rate_eurusd = await this.getRateCurrency('EUR', 'USD')
 
-            //let res = await this.getRatesFromGoogleSheet('UAH_USD')
-            this.RATE_UAHUSD = 40.35 //res['UAH_USD']
+            let res = await this.getRatesFromGoogleSheet('UAH_USD')
+
+            this.RATE_UAHUSD = res['UAH_USD']
         },
         mounted() {
             this.currensCollectionFrom = this.currencies.filter(currency => {
@@ -370,8 +394,10 @@
                 return currency.to
             })
             this.currency_2 = this.currensCollectionTo[1]
+
         },
         methods: {
+
             startOrder() {
               this.stepOrderSend = true
               this.modalActive = !this.modalActive
@@ -380,7 +406,7 @@
                this.modalActive = !this.modalActive
             },
             validPhone(value) {
-                let regexp = /^(\+3|)[0-9]{10,11}$/;
+                let regexp = /^(\+3|)[0-9]{11}$/;
                 return regexp.test(value)
             },
             validTelegramNik(value) {
@@ -391,16 +417,46 @@
                return !(_.isEmpty(this.formOrder.city) && this.getSelectedCurrency_1.type === 'cash')
             },
             focusTelegram() {
-                this.formOrder.telegram === null ? this.formOrder.telegram = '@' : this.formOrder.telegram
+                if (this.formOrder.telegram === null) {
+                    this.v$.formOrder.telegram.$model = '@'
+                }
+                this.showInputTelegram = true
+                this.showInputPhone = false
             },
             blurTelegram() {
-                this.formOrder.telegram.length < 2 ? this.formOrder.telegram = null : this.formOrder.telegram
+               if (this.v$.formOrder.telegram.$model.length < 2) {
+                   this.formOrder.telegram = null
+                   this.v$.formOrder.telegram.$reset()
+                   this.showInputTelegram = true
+                   this.showInputPhone = true
+               }
+            },
+            focusPhone() {
+                if (this.v$.formOrder.phone.$model === null) {
+                    this.v$.formOrder.phone.$model = '+380'
+                }
+                this.showInputTelegram = false
+                this.showInputPhone = true
+            },
+            blurPhone() {
+                if (this.v$.formOrder.phone.$error && this.v$.formOrder.phone.$model.length < 5) {
+
+                    this.formOrder.phone = null
+                    this.v$.formOrder.phone.$reset()
+
+                    this.showInputTelegram = true
+                    this.showInputPhone = true
+                }
+
+
             },
             async getRatesFromGoogleSheet(currencyPare) {
                 try {
                     const response = await fetch('api/rates/all').then(data => {
+                        console.log('data', data)
                         return data;
                     })
+
                     return await response.json()
 
                 } catch (e) {
@@ -426,9 +482,22 @@
                 }
             },
             async submitHandler() {
+                console.log('handler')
+                if (this.v$.$invalid) {
+                    this.v$.$touch() // показываем все сообщения об ошибке
+                    if (this.v$.formOrder.invoiceAmount.$error || !this.v$.formOrder.invoiceAmount.$model.length) {
+                        this.modalActive = false
+                        return null
+                    } else if (this.v$.formOrder.phone.$error && this.v$.formOrder.telegram.$error) {
+                        this.modalActive = true
+                        return null
+                    }
+                }
+
                 try {
                     this.stepOrderLoading = !this.stepOrderLoading
                     this.stepOrderSend = !this.stepOrderSend
+
                     await axios.post(route('order.store'), {
                             city: this.formOrder.city,
                             currency_from: this.currency_1,
@@ -446,8 +515,9 @@
 
                     })
                     setTimeout(() => {
-                       this.resetState()
-                    }, 5000)
+                        this.resetState()
+
+                    }, 0)
 
                 } catch (e) {
 
@@ -497,7 +567,7 @@
                 }
 
                 if(!this.isAllForCalc()) {
-                    console.log('Error Data fo Calculation')
+                    console.log('Error Data for Calculate')
                     return
                 }
 
@@ -657,10 +727,11 @@
         },
 
         computed: {
-            showInputTelegram() {
+
+            showInputTelegram1() {
                 return !((this.formOrder.phone !== null) ? this.formOrder.phone.length > 0 : false)
             },
-            showInputPhone() {
+            showInputPhone1() {
                 return !((this.formOrder.telegram !== null) ? this.formOrder.telegram.length > 0 : false)
             },
             currenciesFrom() {

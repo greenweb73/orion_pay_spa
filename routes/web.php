@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\CurrencyController;
 use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Api\RateSheetController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -43,7 +44,7 @@ Route::get('/clear', function(){
     return redirect()->back()->withNotify($notify);
 })->name('clear-cache');
 
-
+Route::get(    'rates/all', [RateSheetController::class, 'index']);
 Route::group(['middleware' => ['role:admin']], function () {
     Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 

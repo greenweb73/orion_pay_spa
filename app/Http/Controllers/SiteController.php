@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 class SiteController extends Controller
 {
     public function index() {
-        $cities = City::all();
+        $cities = City::orderBy('name')->get();
         $currencies = Currency::all();
         $canLogin = Route::has('login');
         $canRegister = Route::has('register');
