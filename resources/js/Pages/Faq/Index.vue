@@ -1,8 +1,9 @@
 <template>
     <Head title="FAQ - Питання - відповіді" />
-    <main class="max-w-7xl mx-auto text-white" x-data="layout">
+    <!-- page -->
+    <main class="max-w-full md:max-w-7xl mx-auto text-white" x-data="layout">
         <!-- header page -->
-        <header class="relative flex w-full items-center justify-between  p-4 pt-8 pb-14">
+        <header class="relative flex w-full items-center justify-between  p-4 pt-14 lg:pt-8 pb-4 sm:pb-14">
 
             <div class="logo-info-wrap w-full flex flex-row gap-7 justify-between">
                 <!-- logo -->
@@ -10,7 +11,7 @@
                     <img :src="'/images/logo.svg'" /><Link class="hidden sm:block ml-5 text-3xl sm:text-4xl" href="/">OrionPay</Link>
                 </div>
                 <!-- info -->
-                <div class=" sm:relative absolute w-full justify-center sm:justify-end max-w-sm:right-10  time-works flex items-center">
+                <div class="time-works absolute top-0 py-2 left-0 justify-center lg:justify-end w-full bg-indigo-800 lg:bg-transparent lg:relative flex items-center text-red-500">
                     <div class="message-content text-white flex">
                         <i class="mr-2 text-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
