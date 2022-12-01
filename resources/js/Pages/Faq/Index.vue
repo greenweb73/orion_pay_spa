@@ -2,10 +2,26 @@
     <Head title="FAQ - Питання - відповіді" />
     <main class="max-w-7xl mx-auto text-white" x-data="layout">
         <!-- header page -->
-        <header class="flex w-full items-center justify-between  p-4 pt-8 pb-14">
-            <!-- logo -->
-            <div class="logo flex items-center space-x-2 cursor-pointer">
-                <img :src="'/images/logo.svg'" /><Link class="hidden sm:block ml-5 text-3xl sm:text-4xl" href="/">OrionPay</Link>
+        <header class="relative flex w-full items-center justify-between  p-4 pt-8 pb-14">
+
+            <div class="logo-info-wrap w-full flex flex-row gap-7 justify-between">
+                <!-- logo -->
+                <div class="logo flex items-center space-x-2 cursor-pointer">
+                    <img :src="'/images/logo.svg'" /><Link class="hidden sm:block ml-5 text-3xl sm:text-4xl" href="/">OrionPay</Link>
+                </div>
+                <!-- info -->
+                <div class=" sm:relative absolute w-full justify-center sm:justify-end max-w-sm:right-10  time-works flex items-center">
+                    <div class="message-content text-white flex">
+                        <i class="mr-2 text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </i>
+                        години роботи 10:00 - 19:00, Пн - Пт
+                    </div>
+
+                </div>
+
             </div>
 
             <!-- mobile menu button -->
