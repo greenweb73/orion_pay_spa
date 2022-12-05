@@ -15,8 +15,8 @@
             <div class="bottom-footer flex sm:flex-row flex-col  justify-between text-white pt-1 pb-4">
                 <div class="left-side sm:mr-auto text-center pb-3"><a class="text-white px-3" href="mailto:support@orionpay.com.ua">support@orionpay.com.ua</a></div>
                 <div class="right-side flex flex-col sm:flex-row sm:ml-auto sm:justify-center text-center">
-                    <a class="text-white px-3 pb-1" href="/terms-of-use">Користувацька угода</a>
-                    <a class="text-white px-3" href="/privacy">Політика конфіденційності</a>
+                    <a class="text-white px-3 pb-1" href="/terms-of-use">Умови використання</a>
+<!--                    <a class="text-white px-3" href="/privacy">Політика конфіденційності</a>-->
                 </div>
             </div>
         </footer>
