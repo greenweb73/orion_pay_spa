@@ -100,3 +100,21 @@ select::-ms-expand {
 .bg-orion {
     background-color: rgb(23 33 82 / 80%);
 }
+
+.page-content ol {
+    list-style: decimal;
+    margin: 0 0 1.45rem 2.65rem;
+    font-size: 0.95rem;
+    line-height: 1.3rem;
+}
+
+.page-content ol li{
+    margin-bottom: 0.65rem;
+}
+.page-content h2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    margin-bottom: 1rem;
+}
+
+

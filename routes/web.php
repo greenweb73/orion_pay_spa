@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\CurrencyController;
 use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\FrontendController;
 use App\Http\Controllers\Api\RateSheetController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,7 @@ use App\Http\Controllers\Admin\DashboardController;
 
 Route::get('/', [\App\Http\Controllers\SiteController::class, 'index'])->name('home');
 Route::get('/faqs', [\App\Http\Controllers\SiteController::class, 'faqs'])->name('faqs');
+Route::get('/terms-of-use', [\App\Http\Controllers\SiteController::class, 'termsOfUse'])->name('terms-of-use');
 Route::post('/orders', [\App\Http\Controllers\OrderController::class, 'store'])->name('order.store');
 
 //Route::get('admin/dashboard', function () {
@@ -68,6 +70,13 @@ Route::group(['middleware' => ['role:admin']], function () {
     Route::get('admin/faqs/{faq}/edit', [FaqController::class, 'edit'])->name('admin.faq.edit');
     Route::patch('admin/faqs/{faq}', [FaqController::class, 'update'])->name('admin.faq.update');
     Route::delete('admin/faqs/{faq}', [FaqController::class, 'destroy'])->name('admin.faq.destroy');
+
+    Route::get('admin/manage-contents/pages', [FrontendController::class, 'pageIndex'])->name('admin.page.index');
+    Route::get('admin/manage-contents/pages/create', [FrontendController::class, 'pageCreate'])->name('admin.page.create');
+    Route::post('admin/manage-contents/pages', [FrontendController::class, 'pageStore'])->name('admin.page.store');
+    Route::get('admin/manage-contents/pages/{page}/edit', [FrontendController::class, 'pageEdit'])->name('admin.page.edit');
+    Route::patch('admin/manage-contents/pages/{page}', [FrontendController::class, 'pageUpdate'])->name('admin.page.update');
+    Route::delete('admin/manage-contents/pages/{page}', [FrontendController::class, 'pageDestroy'])->name('admin.page.destroy');
 });
 
 require __DIR__.'/auth.php';
