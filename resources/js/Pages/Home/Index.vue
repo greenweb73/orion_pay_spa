@@ -210,9 +210,9 @@
             </div>
         </div>
 
-        <my-modal :loading="stepOrderLoading" :modalActive="modalActive" @modalClose="closeModal">
+        <my-modal :loading="stepOrderLoading" :modalActive="modalActive" @modalClose="closeModal" :key="orderModalKey">
 
-            <div v-if="stepOrderSend">
+            <template v-if="stepOrderSend">
 
                 <h2 class="max-w-[600px] pb-6 pt-6 text-center">Залиште ваш номер телефону або телеграм і ми зв'яжемось з вами для надання детальної інформації</h2>
                 <div class="w-full max-w-sm mx-auto">
@@ -255,9 +255,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </template>
 
-            <div v-else-if="stepOrderSendSuccess">
+            <template v-else-if="stepOrderSendSuccess">
                 <div class="p-4 flex flex-col items-center ">
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="text-emerald-500 w-10 h-10">
@@ -269,7 +269,7 @@
                     <p class="hidden ax-w-[600px] pb-6 pt-2 text-center text-xl text-black">Найближчим часом наш менеджер зв'яжеться з вами...</p>
                 </div>
 
-            </div>
+            </template>
 
         </my-modal>
 
@@ -351,6 +351,7 @@
                 itKey: 1,
                 selCurrKey: 1,
                 resetCityKey: 1,
+                orderModalKey: 1,
                 showInputTelegram: true,
                 showInputPhone: true
             }
@@ -482,7 +483,7 @@
                 }
             },
             async submitHandler() {
-                console.log('handler')
+
                 if (this.v$.$invalid) {
                     this.v$.$touch() // показываем все сообщения об ошибке
                     if (this.v$.formOrder.invoiceAmount.$error || !this.v$.formOrder.invoiceAmount.$model.length) {
@@ -517,7 +518,7 @@
                     setTimeout(() => {
                         this.resetState()
 
-                    }, 0)
+                    }, 3000)
 
                 } catch (e) {
 
@@ -528,9 +529,14 @@
                 this.modalActive = false
                 this.formOrder.invoiceAmount = ''
                 this.formOrder.withdrawAmount = ''
+                this.formOrder.phone = null
+                this.formOrder.telegram = null
                 this.stepOrderSend = false
                 this.stepOrderSendSuccess = false
                 this.v$.$reset()
+                this.showInputTelegram = true
+                this.showInputPhone = true
+                this.orderModalKey++
             },
             setSelectedCity(city) {
                this.formOrder.city = city
