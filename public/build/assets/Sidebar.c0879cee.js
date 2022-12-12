@@ -1,1 +1,0 @@
-import{_ as e}from"./_plugin-vue_export-helper.cdc0426e.js";import{l as o}from"./app.fcf9edb7.js";const s={name:"Sidebar"};function t(r,n,a,c,p,_){return o(r.$slots,"menu")}const d=e(s,[["render",t]]);export{d as S};
