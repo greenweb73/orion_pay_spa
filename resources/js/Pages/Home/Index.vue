@@ -508,9 +508,10 @@
                             phone: this.formOrder.phone,
                             telegram: this.formOrder.telegram
                     }).then(res => {
-                        console.log('res', res)
-                        console.log('res.statusText', res.statusText)
-                        if (res.statusText === 'OK') {
+                        // console.log('res.status', res.status)
+                        // console.log('res.data.status', res.data.status)
+                        // console.log('res.statusText', res.statusText)
+                        if (res.data.status === 'ok') {
                             this.stepOrderLoading = !this.stepOrderLoading
                             this.stepOrderSendSuccess = !this.stepOrderSendSuccess
                         }
