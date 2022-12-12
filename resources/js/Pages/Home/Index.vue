@@ -537,6 +537,7 @@
                 this.showInputTelegram = true
                 this.showInputPhone = true
                 this.orderModalKey++
+
             },
             setSelectedCity(city) {
                this.formOrder.city = city
