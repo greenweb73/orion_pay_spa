@@ -454,7 +454,7 @@
             async getRatesFromGoogleSheet(currencyPare) {
                 try {
                     const response = await fetch('api/rates/all').then(data => {
-                        console.log('data', data)
+                        console.log('data resp', data)
                         return data;
                     })
 
