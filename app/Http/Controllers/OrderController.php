@@ -22,8 +22,8 @@ class OrderController extends Controller
 
             $this->sendNotify($data);
 
-            //return response()->json(['status' => 'ok']);
-            return redirect()->back()->with(['status' => 'ok']);
+            return response()->json(['status' => 'ok']);
+            //return redirect()->back()->with(['status' => 'ok']);
         } catch (Exception $e) {
 
             return response()->json(['status' => 'error']);

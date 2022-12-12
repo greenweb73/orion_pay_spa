@@ -508,6 +508,7 @@
                             phone: this.formOrder.phone,
                             telegram: this.formOrder.telegram
                     }).then(res => {
+                        console.log('res', res)
                         console.log('res.statusText', res.statusText)
                         if (res.statusText === 'OK') {
                             this.stepOrderLoading = !this.stepOrderLoading
