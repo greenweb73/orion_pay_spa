@@ -77,6 +77,11 @@ Route::group(['middleware' => ['role:admin']], function () {
     Route::get('admin/manage-contents/pages/{page}/edit', [FrontendController::class, 'pageEdit'])->name('admin.page.edit');
     Route::patch('admin/manage-contents/pages/{page}', [FrontendController::class, 'pageUpdate'])->name('admin.page.update');
     Route::delete('admin/manage-contents/pages/{page}', [FrontendController::class, 'pageDestroy'])->name('admin.page.destroy');
+
+    Route::get('admin/manage-contents/faq_page', [FrontendController::class, 'pageFaqIndex'])->name('admin.faq.page.index');
+    Route::post('admin/manage-contents/faq_page', [FrontendController::class, 'pageFaqStore'])->name('admin.faq.page.store');
+    //Route::get('admin/manage-contents/faq_page/edit', [FrontendController::class, 'pageFaqEdit'])->name('admin.faq.page.index');
+    Route::patch('admin/manage-contents/faq_page/{page}', [FrontendController::class, 'pageFaqUpdate'])->name('admin.faq.page.update');
 });
 
 require __DIR__.'/auth.php';

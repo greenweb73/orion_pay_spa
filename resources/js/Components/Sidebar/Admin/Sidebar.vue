@@ -130,13 +130,13 @@
                 </Link>
             </li>
             <li class="items-center">
-                <a
+                <Link
                     class="text-blueGray-700 hover:text-blueGray-500 text-xs py-3 font-bold block"
-                    :href="'/profile'"
+                    :href="route('admin.faq.page.index')"
                 >
                     <i class="fas fa-user-circle text-blueGray-300 mr-2 text-sm"></i>
                     Сторінка FAQ
-                </a>
+                </Link>
             </li>
           </ul>
 
