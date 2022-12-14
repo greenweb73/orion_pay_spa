@@ -1,9 +1,15 @@
 <template>
     <Head>
-        <title>{{ data.data_values.meta_title }}</title>
+        <title>{{ content.title }}</title>
+        <meta head-key="description" name="description" content="" />
+
+
+
     </Head>
     <!-- page -->
     <main class="max-w-full md:max-w-7xl mx-auto text-white" x-data="layout">
+
+
         <!-- header page -->
         <header class="relative flex w-full items-center justify-between  p-4 pt-14 lg:pt-8 pb-4 sm:pb-14">
 
@@ -95,8 +101,8 @@
             <div class="w-full p-4">
 
                 <div class="bg-orion max-h-[570px] min-h-[520px] lg:py-8 pt-3 w-full sm:px-10 px-6 shadow-md shadow-lg rounded-lg overflow-y-auto">
-                    <h1 class="text-indigo-100 tracking-wide text-3xl font-bold"> {{ data.data_values.title }}</h1>
-                    <div class="page-content pt-8 text-indigo-100 text-left" v-html="data.data_values.description"></div>
+                    <h1 class="text-indigo-100 tracking-wide text-3xl font-bold"> {{ content.title }}</h1>
+                    <div class="page-content pt-8 text-indigo-100 text-left" v-html="content.description"></div>
                 </div>
 
 
@@ -122,7 +128,8 @@
             MyAccordion
         },
         props: [
-            'data'
+            'content',
+            'meta'
         ],
         data() {
             return {
