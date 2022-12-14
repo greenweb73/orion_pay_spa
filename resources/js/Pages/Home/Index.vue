@@ -1,12 +1,14 @@
 <template>
     <Head>
         <title>Переказ коштів з України</title>
-        <meta head-key="description" name="description" content="This is the default description" />
+        <meta head-key="description" name="description" content="" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     </Head>
 
     <!-- page -->
     <main class="max-w-full md:max-w-7xl mx-auto text-white" x-data="layout">
+
+
         <!-- header page -->
         <header class="relative flex w-full items-center justify-between  p-4 pt-14 lg:pt-8 pb-4 sm:pb-14">
 

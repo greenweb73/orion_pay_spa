@@ -8,6 +8,8 @@ use App\Models\Faq;
 use App\Models\Frontend;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Arr;
+use Inertia\Inertia;
 
 class SiteController extends Controller
 {
@@ -23,13 +25,19 @@ class SiteController extends Controller
 
     public function faqs() {
         $faqs = Faq::all();
-        return inertia('Faq/Index', compact('faqs'));
+        $data['faqs'] = $faqs;
+        return inertia('Faq/Index', compact('data'));
     }
 
     public function termsOfUse() {
         $id = 1;
-        $data = $this->getContent($id);
-        return inertia('Page/Index', compact('data'));
+        $data = $this->getContent($id)->only(['data_values']);
+        $content = Arr::only($data['data_values'], ['title', 'description']);
+        $meta['title'] = $data['data_values']['meta_title'] ?? '';
+        $meta['description'] = $data['data_values']['meta_description'] ?? '';
+        $meta['keywords'] = $data['data_values']['meta_keywords'] ?? '';
+        return Inertia::render('Page/Index', compact('content', 'meta'))->withViewData(['meta' => $meta]);
+        //return Inertia::render('Page/Index', ['meta' => $meta])->withViewData(['meta' => $meta]);
     }
 
     public function getContent($id)

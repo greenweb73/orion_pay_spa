@@ -86,7 +86,7 @@
                 <div class="bg-orion max-h-[570px] min-h-[520px] lg:py-8 pt-3 w-full sm:px-10 px-6 shadow-md shadow-lg rounded-lg overflow-y-auto">
                     <h1 class="text-indigo-100 tracking-wide text-3xl font-bold">FAQ: Питання-відповіді</h1>
                     <div class="pt-8 text-indigo-100 text-left">
-                        <MyAccordion v-for="(faq, index) in faqs" class="mb-4">
+                        <MyAccordion v-for="(faq, index) in data.faqs" class="mb-4">
                             <template v-slot:title>
                                 <span class="max-w-[90%] font-semibold text-xl">{{ faq.question }}</span>
                             </template>
@@ -123,7 +123,7 @@
             MyAccordion
         },
         props: [
-            'faqs'
+            'data'
         ],
         data() {
             return {
