@@ -456,16 +456,16 @@
     "file": "assets/app.4b3c17ca.css",
     "src": "resources/js/app.css"
   },
-  "resources/js/Pages/Welcome.css": {
-    "file": "assets/Welcome.8dcd2ff0.css",
-    "src": "resources/js/Pages/Welcome.css"
+  "vue-select.css": {
+    "file": "assets/vue-select.7110009c.css",
+    "src": "vue-select.css"
   },
   "resources/js/Pages/Home/Index.css": {
     "file": "assets/Index.8dcd2ff0.css",
     "src": "resources/js/Pages/Home/Index.css"
   },
-  "vue-select.css": {
-    "file": "assets/vue-select.7110009c.css",
-    "src": "vue-select.css"
+  "resources/js/Pages/Welcome.css": {
+    "file": "assets/Welcome.8dcd2ff0.css",
+    "src": "resources/js/Pages/Welcome.css"
   }
 }
