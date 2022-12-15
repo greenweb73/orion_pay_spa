@@ -23,6 +23,7 @@ class FrontendController extends Controller
     }
 
     public function pageCreate() {
+
         return Inertia::render('Admin/ManageContents/Page/Create');
     }
 

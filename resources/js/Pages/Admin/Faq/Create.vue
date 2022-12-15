@@ -5,56 +5,59 @@
     <AuthenticatedLayout>
         <template #header>Нове Питання - Відповідь</template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="flex flex-column max-w-max min-w-full">
 
-                <div class="p-6 relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
-                    <form @submit.prevent="submitHandler">
+            <div class="py-12 min-w-[70%] mx-auto sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-                        <div class="flex flex-wrap">
-                            <div class="w-full lg:w-12/12 px-4">
-                                <div class="relative w-full mb-3">
-                                    <label
-                                        class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                                        htmlFor="grid-password"
-                                    >
-                                        Питання
-                                    </label>
-                                    <input
-                                        type="text"
-                                        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                        v-model="form.question"
-                                    />
-                                </div>
-                                <div class="relative w-full mb-3">
-                                    <label
-                                        class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                                        htmlFor="grid-password"
-                                    >
-                                        Відповідь
-                                    </label>
-                                    <editor
-                                        :api-key="apiKey"
-                                        v-model="form.answer"
-                                        :init="{
-                                            plugins: 'advlist autolink code lists link image charmap print preview hr ancor pagebreak media table',
-                                            toolbar_mode: 'floating',
-                                            relative_urls: false,
-                                            height: 300
-                                        }"
-                                    />
+                    <div class="p-6 relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
+                        <form @submit.prevent="submitHandler">
+
+                            <div class="flex flex-wrap">
+                                <div class="w-full lg:w-12/12 px-4">
+                                    <div class="relative w-full mb-3">
+                                        <label
+                                            class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                                            htmlFor="grid-password"
+                                        >
+                                            Питання
+                                        </label>
+                                        <input
+                                            type="text"
+                                            class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                                            v-model="form.question"
+                                        />
+                                    </div>
+                                    <div class="relative w-full mb-3">
+                                        <label
+                                            class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                                            htmlFor="grid-password"
+                                        >
+                                            Відповідь
+                                        </label>
+                                        <editor
+                                            :api-key="apiKey"
+                                            v-model="form.answer"
+                                            :init="{
+                                                plugins: 'advlist autolink code lists link image charmap print preview hr ancor pagebreak media table',
+                                                toolbar_mode: 'floating',
+                                                relative_urls: false,
+                                                height: 300
+                                            }"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="px-4 pt-8 ml-auto">
-                            <button type="submit"
-                                  class=" bg-emerald-500 active:bg-emerald-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150">
-                                Зберегти
-                            </button>
-                        </div>
+                            <div class="px-4 pt-8 ml-auto">
+                                <button type="submit"
+                                      class=" bg-emerald-500 active:bg-emerald-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150">
+                                    Зберегти
+                                </button>
+                            </div>
 
-                    </form>
+                        </form>
 
+                    </div>
                 </div>
             </div>
         </div>
@@ -81,6 +84,7 @@
         },
         data() {
             return {
+                apiKeyEditor: import.meta.env.VITE_API_TINY_KEY,
                 form: {
                     question: '',
                     answer: '',
@@ -89,9 +93,7 @@
         },
         methods: {
             submitHandler() {
-
                 Inertia.post(route('admin.faq.store'), this.form)
-
             }
         }
     }

@@ -5,72 +5,76 @@
         <AuthenticatedLayout>
             <template #header> </template>
 
-            <div class="py-12">
-                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <Link :href="route('currency.create')"
-                          class="bg-emerald-500 active:bg-emerald-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150">
-                        Додати валюту
-                    </Link>
-                    <div class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <table class="items-center w-full bg-transparent border-collapse">
-                            <thead class="text-xs text-left text-gray-700 uppercase bg-indigo-100 dark:bg-gray-700 dark:text-gray-400">
-                                <tr>
-                                    <th scope="col" class="py-3 px-6">ID</th>
-                                    <th scope="col" class="py-3 px-6">Код валюти</th>
-                                    <th class="py-3 px-6">Назва валюти</th>
-                                    <th class="py-3 px-6">Тип валюти</th>
-                                    <th class="py-3 px-6">Роль валюти при обміні</th>
-                                    <th class="py-3 px-6">Мінімальна сума для обміну</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(currency, index) in currencies" :key="currency.id"
-                                    :class="(index % 2) ? ['bg-white', 'border-b', 'dark:bg-gray-900', 'dark:border-gray-700']: ['bg-gray-50', 'border-b', 'dark:bg-gray-800', 'dark:border-gray-700']"
-                                    class="hover:bg-gray-50 dark:hover:bg-gray-600">
-                                    <td
-                                        class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                                    >
-                                        {{currency.id}}
-                                    </td>
-                                    <td
-                                        class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                                    >
-                                        {{currency.cc}}
-                                    </td>
-                                    <td
-                                        class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                                    >
-                                        {{currency.name}}
-                                    </td>
-                                    <td
-                                        class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                                    >
-                                        {{currency.type}}
-                                    </td>
-                                    <td
-                                        class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                                    >
-                                        <div class="flex flex-inline gap-3">
-                                            <span class="py-1 px-2 bg-purple-200 rounded-lg" v-if="currency.from">Віддається </span>
-                                            <span class="py-1 px-2 bg-sky-200 rounded-lg" v-if="currency.to">Отримується </span>
-                                        </div>
+            <div class="flex flex-column max-w-max min-w-full">
 
-                                    </td>
-                                    <td
-                                        class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                                    >
-                                        {{currency.min_value}}
-                                    </td>
-                                    <td
-                                        class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right"
-                                    >
-                                        <table-dropdown :edit_route="route('currency.edit', currency.id)" :destroy_id="currency.id" @selectDestroyId="destroy"/>
-                                    </td>
-                                </tr>
-                            </tbody>
+                <div class="py-12 min-w-[70%] mx-auto sm:px-6 lg:px-8">
+                    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                        <Link :href="route('currency.create')"
+                              class="bg-emerald-500 active:bg-emerald-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150">
+                            Додати валюту
+                        </Link>
+                        <div class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                            <table class="items-center w-full bg-transparent border-collapse">
+                                <thead class="text-xs text-left text-gray-700 uppercase bg-indigo-100 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" class="py-3 px-6">ID</th>
+                                        <th scope="col" class="py-3 px-6">Код валюти</th>
+                                        <th class="py-3 px-6">Назва валюти</th>
+                                        <th class="py-3 px-6">Тип валюти</th>
+                                        <th class="py-3 px-6">Роль валюти при обміні</th>
+                                        <th class="py-3 px-6">Мінімальна сума для обміну</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(currency, index) in currencies" :key="currency.id"
+                                        :class="(index % 2) ? ['bg-white', 'border-b', 'dark:bg-gray-900', 'dark:border-gray-700']: ['bg-gray-50', 'border-b', 'dark:bg-gray-800', 'dark:border-gray-700']"
+                                        class="hover:bg-gray-50 dark:hover:bg-gray-600">
+                                        <td
+                                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                                        >
+                                            {{currency.id}}
+                                        </td>
+                                        <td
+                                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                                        >
+                                            {{currency.cc}}
+                                        </td>
+                                        <td
+                                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                                        >
+                                            {{currency.name}}
+                                        </td>
+                                        <td
+                                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                                        >
+                                            {{currency.type}}
+                                        </td>
+                                        <td
+                                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                                        >
+                                            <div class="flex flex-inline gap-3">
+                                                <span class="py-1 px-2 bg-purple-200 rounded-lg" v-if="currency.from">Віддається </span>
+                                                <span class="py-1 px-2 bg-sky-200 rounded-lg" v-if="currency.to">Отримується </span>
+                                            </div>
 
-                        </table>
+                                        </td>
+                                        <td
+                                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                                        >
+                                            {{currency.min_value}}
+                                        </td>
+                                        <td
+                                            class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right"
+                                        >
+                                            <table-dropdown :edit_route="route('currency.edit', currency.id)" :destroy_id="currency.id" @selectDestroyId="destroy"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+
+                        </div>
                     </div>
                 </div>
             </div>
