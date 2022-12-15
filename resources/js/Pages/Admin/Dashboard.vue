@@ -19,5 +19,5 @@ import { Head } from '@inertiajs/inertia-vue3';
             </div>
         </div>
     </AuthenticatedLayout>
-    {{$page.props.auth}}
+
 </template>

@@ -1,11 +1,5 @@
 <template>
-    <Head>
-        <title>{{ content.title }}</title>
-        <meta head-key="description" name="description" content="" />
-
-
-
-    </Head>
+    <AppHead :title="content.title"></AppHead>
     <!-- page -->
     <main class="max-w-full md:max-w-7xl mx-auto text-white" x-data="layout">
 
@@ -114,7 +108,8 @@
 </template>
 
 <script>
-    import {Link, Head} from '@inertiajs/inertia-vue3'
+    import AppHead from "@/Components/Frontend/AppHead.vue";
+    import { Link } from '@inertiajs/inertia-vue3'
     import MainLayout from "@/Layouts/MainLayout.vue";
     import Sidebar from "@/Components/Frontend/Sidebar.vue";
     import MyAccordion from "@/Components/UI/MyAccordion.vue";
@@ -123,7 +118,7 @@
         layout: MainLayout,
         components: {
             Link,
-            Head,
+            AppHead,
             Sidebar,
             MyAccordion
         },
@@ -131,6 +126,10 @@
             'content',
             'meta'
         ],
+        mounted() {
+            console.log(typeof this.meta)
+            console.log('global toast property: ', this.$description);
+        },
         data() {
             return {
                 isOpenMobileMenu: false,
