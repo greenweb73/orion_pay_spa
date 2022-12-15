@@ -137,7 +137,7 @@
         },
         data() {
             return {
-                apiKeyEditor: 'hyfqdus1dwgnfd0dmjpdjyab4fgfk1x1m0yw9ip7h9es74xc',
+                apiKeyEditor: import.meta.env.VITE_API_TINY_KEY,
                 form: {
                     title: '',
                     description: '',
