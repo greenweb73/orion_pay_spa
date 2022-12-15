@@ -26,22 +26,35 @@ class SiteController extends Controller
     public function faqs() {
         $faqs = Faq::all();
         $data['faqs'] = $faqs;
-        return inertia('Faq/Index', compact('data'));
+        $result_query = $this->getContent('faq_page.element');
+
+        $meta['title'] = $result_query['meta_title'] ?? '';
+        $meta['description'] = $result_query['meta_description'] ?? '';
+        $meta['keywords'] = $result_query['meta_keywords'] ?? '';
+
+        return Inertia::render('Faq/Index', compact('data', 'meta'))->withViewData(['meta' => $meta]);
     }
 
     public function termsOfUse() {
         $id = 1;
-        $data = $this->getContent($id)->only(['data_values']);
-        $content = Arr::only($data['data_values'], ['title', 'description']);
-        $meta['title'] = $data['data_values']['meta_title'] ?? '';
-        $meta['description'] = $data['data_values']['meta_description'] ?? '';
-        $meta['keywords'] = $data['data_values']['meta_keywords'] ?? '';
+        $result_query = $this->getContent($id);
+
+        $content = Arr::only($result_query, ['title', 'description']);
+        $meta['title'] = $result_query['meta_title'] ?? '';
+        $meta['description'] = $result_query['meta_description'] ?? '';
+        $meta['keywords'] = $result_query['meta_keywords'] ?? '';
+
         return Inertia::render('Page/Index', compact('content', 'meta'))->withViewData(['meta' => $meta]);
         //return Inertia::render('Page/Index', ['meta' => $meta])->withViewData(['meta' => $meta]);
     }
 
-    public function getContent($id)
+    public function getContent($key)
     {
-        return Frontend::find($id);
+
+        if(gettype($key) === 'integer') {
+            return Frontend::find($key)->value('data_values');
+        } elseif (gettype($key) === 'string') {
+            return Frontend::where('data_keys', $key)->value('data_values');
+        }
     }
 }

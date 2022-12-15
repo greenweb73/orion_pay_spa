@@ -5,8 +5,8 @@
     <AuthenticatedLayout>
         <template #header>Редагування сторінки FAQ</template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="flex flex-column max-w-max min-w-full">
+            <div class="py-12 min-w-[70%] mx-auto sm:px-6 lg:px-8">
 
                 <div class="p-6 relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
                     <form @submit.prevent="submitHandler">

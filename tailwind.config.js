@@ -15,6 +15,10 @@ module.exports = {
                 sans: ['Nunito', ...defaultTheme.fontFamily.sans],
             },
         },
+        maxWidth: {
+            '1/2': '50%',
+            '2/3': '70%'
+        }
     },
 
     // tailwind.config.js

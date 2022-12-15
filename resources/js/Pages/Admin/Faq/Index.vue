@@ -5,7 +5,7 @@
         <AuthenticatedLayout>
             <template #header> </template>
 
-            <div class="py-12">
+            <div class="max-w-max">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <Link :href="route('admin.faq.create')"
                           class="bg-emerald-500 active:bg-emerald-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150">

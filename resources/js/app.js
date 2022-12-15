@@ -10,13 +10,17 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || '';
 
 createInertiaApp({
+    description: (description) => `${description}`,
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
     setup({ el, app, props, plugin }) {
-        return createApp({ render: () => h(app, props) })
+
+        let MyApp = createApp({ render: () => h(app, props) })
             .use(plugin)
             .use(ZiggyVue, Ziggy)
-            .mount(el);
+        MyApp.config.globalProperties.$description = 'sdfdsfdsf';
+        MyApp.mount(el);
+        return MyApp
     },
 });
 
