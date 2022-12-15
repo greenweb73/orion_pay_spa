@@ -93,7 +93,9 @@
         },
         methods: {
             submitHandler() {
+
                 Inertia.post(route('admin.faq.store'), this.form)
+
             }
         }
     }

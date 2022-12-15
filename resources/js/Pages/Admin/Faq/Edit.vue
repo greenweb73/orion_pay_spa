@@ -3,7 +3,7 @@
     <Head title="Додати валюту" />
 
     <AuthenticatedLayout>
-        <template #header> Редагування Питання - Відповіді...</template>
+        <template #header> Редагування сторінки Питання - Відповіді.</template>
 
         <div class="flex flex-column max-w-max min-w-full">
 
@@ -36,7 +36,7 @@
                                             Відповідь
                                         </label>
                                         <editor
-                                            :api-key="apiKey"
+                                            :api-key="apiKeyEditor"
                                             v-model="form.answer"
                                             :init="{
                                                 plugins: 'advlist autolink code lists link image charmap print preview hr ancor pagebreak media table',
