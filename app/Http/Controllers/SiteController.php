@@ -20,7 +20,7 @@ class SiteController extends Controller
         $canRegister = Route::has('register');
         //$laravelVersion = Application::VERSION;
         //$phpVersion = PHP_VERSION;
-        return inertia('Home/Index', compact('currencies','canLogin', 'canRegister', 'cities') );
+        return inertia('Frontend/Home/Index', compact('currencies','canLogin', 'canRegister', 'cities') );
     }
 
     public function faqs() {
@@ -32,7 +32,7 @@ class SiteController extends Controller
         $meta['description'] = $result_query['meta_description'] ?? '';
         $meta['keywords'] = $result_query['meta_keywords'] ?? '';
 
-        return Inertia::render('Faq/Index', compact('data', 'meta'))->withViewData(['meta' => $meta]);
+        return Inertia::render('Frontend/Faq/Index', compact('data', 'meta'))->withViewData(['meta' => $meta]);
     }
 
     public function termsOfUse() {
@@ -44,7 +44,7 @@ class SiteController extends Controller
         $meta['description'] = $result_query['meta_description'] ?? '';
         $meta['keywords'] = $result_query['meta_keywords'] ?? '';
 
-        return Inertia::render('Page/Index', compact('content', 'meta'))->withViewData(['meta' => $meta]);
+        return Inertia::render('Frontend/Page/Index', compact('content', 'meta'))->withViewData(['meta' => $meta]);
         //return Inertia::render('Page/Index', ['meta' => $meta])->withViewData(['meta' => $meta]);
     }
 

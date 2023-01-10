@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\CurrencyController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\FrontendController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Api\RateSheetController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -48,7 +49,17 @@ Route::get('/clear', function(){
 
 Route::get(    'rates/all', [RateSheetController::class, 'index']);
 Route::group(['middleware' => ['role:admin']], function () {
+
+    Route::get('admin/users/roles', [RoleController::class, 'index'])->name('admin.role.index');
+    Route::get('admin/users/roles/create', [RoleController::class, 'create'])->name('admin.role.create');
+    Route::post('admin/users/roles', [RoleController::class, 'store'])->name('admin.role.store');
+    Route::get('admin/users/roles/{role}/edit', [RoleController::class, 'edit'])->name('admin.role.edit');
+    Route::patch('admin/users/roles/{role}', [RoleController::class, 'update'])->name('admin.role.update');
+    Route::delete('admin/users/roles/{role}', [RoleController::class, 'destroy'])->name('admin.role.destroy');
+
     Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+
 
     Route::get('admin/currencies', [CurrencyController::class, 'index'])->name('currency.index');
     Route::get('admin/currencies/create', [CurrencyController::class, 'create'])->name('currency.create');

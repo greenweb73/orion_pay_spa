@@ -28,7 +28,7 @@ class CityController extends Controller
     public function store(StoreRequest $request) {
         City::firstOrCreate($request->validated());
 
-        return redirect()->route('city.index');
+        return redirect()->route('city.index')->with('success','Role created successfully');
     }
 
     public function edit(City $city) {
