@@ -3,6 +3,7 @@
     <div class=" min-h-screen sm:items-center sm:pt-0 bg-re bg-repeat-y flex flex-col justify-between"
          style="background-image: url('/images/orion-constellation.jpg');">
         <div class="container-fluid lg:container mx-auto">
+
             <slot />
         </div>
 
